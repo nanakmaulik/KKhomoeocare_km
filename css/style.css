@@ -109,8 +109,9 @@
 }
 
 .hero-header {
-    background: url(../img/hero.jpg) top right no-repeat;
+    background: url(../img/ChatGPT\ Image\ Jan\ 28\,\ 2026\,\ 01_23_32\ PM.png )   top right no-repeat;
     background-size: cover;
+    filter: blur(5px);
 }
 
 .service-item {
