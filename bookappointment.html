@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Doctor Profile | MediSphere</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link href="favicon.png" rel="icon">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #F9FAFB;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* NAVBAR BOLD */
+        .navbar-nav .nav-link {
+            font-weight: 600 !important;
+        }
+
+        /* DOCTOR IMAGE */
+        .doctor-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* SECTION & CARDS */
+        .section-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            margin-top: 25px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .doctor-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 35px;
+            margin-top: 40px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        /* UNIFORM BUTTONS */
+        .btn-custom {
+            background: #E7C1D3;
+            border: none !important;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-custom:hover {
+            background: #d3a8b9;
+        }
+
+        /* DATE TABS WITH MORE SPACE */
+        .date-tabs button {
+            border: none;
+            background: #f5f5f5;
+            padding: 10px 22px;
+            border-radius: 8px;
+            margin-right: 15px;   /* MORE SPACE */
+            margin-bottom: 12px;  /* SPACE BELOW */
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .date-tabs button:hover {
+            background: #ebd7e0;
+        }
+
+        .date-tabs .active {
+            background: #e7c1d3 !important;
+            font-weight: 700 !important;
+            box-shadow: 0 5px 15px rgba(231, 193, 211, 0.35);
+        }
+
+        .slot-box {
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f8f8;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* UNAVAILABLE COLUMN */
+        .unavailable-date {
+            background: #ececec;
+            color: #777;
+            border-radius: 8px;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            cursor: not-allowed;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOPBAR -->
+    <div class="container-fluid py-2 border-bottom d-none d-lg-block">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-lg-start">
+                    <a class="text-body pe-3">+91 62830 87875</a> |
+                    <a class="text-body px-3">medishere@gmail.com</a>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a class="text-body px-2"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <div class="container-fluid sticky-top bg-white shadow-sm">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light py-3">
+                <a href="#" class="navbar-brand">
+                    <h1 class="m-0 text-primary"><i class="fa fa-clinic-medical me-2"></i>Medi Sphere</h1>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="nav">
+                    <div class="navbar-nav ms-auto">
+                        <a href="#" class="nav-link">Home</a>
+                        <a href="#" class="nav-link">About</a>
+                        <a href="#" class="nav-link">Service</a>
+                        <a href="#" class="nav-link">Pricing</a>
+                        <a href="#" class="nav-link">Contact</a>
+                        <a href="#" class="nav-link">Lab Test</a>
+                        <a href="#" class="nav-link active">Find Specialist</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 2-COLUMN LAYOUT -->
+    <div class="container">
+        <div class="row">
+            
+            <!-- LEFT SIDE: DOCTOR + ABOUT + EDUCATION -->
+            <div class="col-md-5">
+
+                <!-- DOCTOR CARD -->
+                <div class="doctor-card">
+                    <div class="text-center">
+                        <img src="doctor1.jpg" class="doctor-img">
+                    </div>
+
+                    <h3 class="mt-3">Dr. Manjinder Sandhu</h3>
+                    <h6 class="text-muted">Principal Director - Cardiology | Fortis Gurgaon</h6>
+
+                    <p class="mt-3"><strong>Specialization:</strong><br>
+                        Cardiac Sciences, Interventional Cardiology
+                    </p>
+
+                    <p><strong>Experience:</strong> 35 Years</p>
+                    <p><strong>Fees:</strong> ₹2000</p>
+                </div>
+
+                <!-- ABOUT BELOW DOCTOR -->
+                <div class="section-box">
+                    <h4>About</h4>
+                    <p>
+                        Dr. Manjinder Sandhu is a renowned interventional cardiologist with more than 35 years’ experience...
+                    </p>
+                </div>
+
+                <!-- EDUCATION BELOW ABOUT -->
+                <div class="section-box">
+                    <h4>Education</h4>
+                    <p>MBBS, MD (Medicine), DNB, DM (Cardiology)</p>
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDE: APPOINTMENT -->
+            <div class="col-md-7">
+                <div class="section-box">
+                    <h4>Schedule Appointment</h4>
+
+                    <div class="mt-3">
+                        <button class="btn-custom">Book Hospital Visit</button>
+                        <button class="btn-custom ms-3">Book Video Consult</button>
+                    </div>
+
+                    <h5 class="mt-4">Select Date</h5>
+
+                    <div class="row">
+                        <div class="col-md-8">
+
+                            <!-- DATE BUTTONS WITH SPACING -->
+                            <div class="date-tabs mt-3">
+                                <button onclick="loadSlots(0)" class="active">Wed 04 Feb</button>
+                                <button onclick="loadSlots(1)">Thu 05 Feb</button>
+                                <button onclick="loadSlots(2)">Fri 06 Feb</button>
+                                <button onclick="loadSlots(3)">Sat 07 Feb</button>
+                                <button onclick="loadSlots(4)">Sun 08 Feb</button>
+                            </div>
+
+                            <div id="slot-section" class="mt-4">
+                                <h6 class="text-muted">All slots are booked for this date</h6>
+                                <div class="slot-box mt-3">❌ No Slots Available</div>
+
+                                <button class="btn-custom mt-4">Find Next Slot</button>
+                                <button class="btn-custom mt-4 ms-3">Request a Callback</button>
+                            </div>
+                        </div>
+
+                        <!-- UNAVAILABLE DATES -->
+                        <div class="col-md-4">
+                            <h6><strong>Unavailable Dates</strong></h6>
+
+                            <div class="unavailable-date">Mon 02 Feb</div>
+                            <div class="unavailable-date">Tue 03 Feb</div>
+                            <div class="unavailable-date">Mon 09 Feb</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="container-fluid bg-dark text-light mt-5 py-5">
+        <div class="container">
+            <p class="text-center">© MediSphere | All Rights Reserved</p>
+        </div>
+    </div>
+
+    <!-- SLOT LOGIC -->
+    <script>
+        const slots = [
+            [],
+            ["10:00 AM", "11:30 AM", "3:00 PM"],
+            ["9:00 AM", "1:00 PM"],
+            [],
+            ["12:30 PM", "5:00 PM"]
+        ];
+
+        function loadSlots(index) {
+            document.querySelectorAll(".date-tabs button").forEach(btn =>
+                btn.classList.remove("active")
+            );
+            document.querySelectorAll(".date-tabs button")[index].classList.add("active");
+
+            let container = document.getElementById("slot-section");
+
+            if (slots[index].length === 0) {
+                container.innerHTML = `
+                    <h6 class="text-muted">All slots are booked for this date</h6>
+                    <div class="slot-box mt-3">❌ No Slots Available</div>
+                    <button class="btn-custom mt-4">Find Next Slot</button>
+                    <button class="btn-custom mt-4 ms-3">Request a Callback</button>`;
+            } else {
+                container.innerHTML = `<h6><strong>Available Slots</strong></h6>`;
+                slots[index].forEach(time => {
+                    container.innerHTML += `<div class="slot-box mt-3">🕒 ${time}</div>`;
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>
