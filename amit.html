@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Dr. Amit Javed | MediSphere</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body { background: #F9FAFB; font-family: 'Poppins'; }
+        .doctor-img { width:150px;height:150px;border-radius:20px;object-fit:cover;box-shadow:0 6px 20px rgba(0,0,0,0.15);}
+        .section-box,.doctor-card{background:#fff;padding:30px;border-radius:16px;margin-top:25px;box-shadow:0 8px 24px rgba(0,0,0,0.06);}
+        .btn-custom{background:#E7C1D3;border:none;padding:10px 22px;border-radius:10px;font-weight:600;}
+        .slot-box{padding:15px;border-radius:8px;background:#f8f8f8;text-align:center;font-weight:600;}
+        .unavailable-date{background:#ececec;color:#777;border-radius:8px;padding:10px 20px;margin-bottom:10px;}
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER (Same as your design) -->
+    <div class="container-fluid py-2 border-bottom d-none d-lg-block">
+        <div class="container d-flex justify-content-between">
+            <div>+91 62830 87875 | medisphere@gmail.com</div>
+            <div><i class="fab fa-instagram"></i></div>
+        </div>
+    </div>
+
+    <div class="container-fluid sticky-top bg-white shadow-sm">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light py-3">
+                <h1 class="m-0 text-primary">MediSphere</h1>
+                <div class="collapse navbar-collapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="#" class="nav-link">Home</a>
+                        <a href="#" class="nav-link">Find Specialist</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+
+            <!-- LEFT -->
+            <div class="col-md-5">
+                <div class="doctor-card text-center">
+                    <img src="doctor3.jpg" class="doctor-img">
+                    <h3 class="mt-3">Dr. Amit Javed</h3>
+                    <h6 class="text-muted">General Surgery | Oncology</h6>
+                    <p><strong>Experience:</strong> 25 Years</p>
+                    <p><strong>Fees:</strong> ₹1500</p>
+                </div>
+
+                <div class="section-box">
+                    <h4>About</h4>
+                    <p>Dr. Amit Javed is a senior surgical oncologist known for expertise in cancer surgeries.</p>
+                </div>
+
+                <div class="section-box">
+                    <h4>Education</h4>
+                    <p>MBBS, MS (Surgery), MCh (Oncology)</p>
+                </div>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="col-md-7">
+                <div class="section-box">
+                    <h4>Schedule Appointment</h4>
+
+                    <button class="btn-custom mt-3">Book Hospital Visit</button>
+                    <button class="btn-custom mt-3 ms-2">Video Consult</button>
+
+                    <h5 class="mt-4">Select Date</h5>
+
+                    <div class="slot-box mt-3">12:00 PM</div>
+                    <div class="slot-box mt-3">3:00 PM</div>
+
+                    <h6 class="mt-4"><strong>Unavailable Dates</strong></h6>
+                    <div class="unavailable-date">Mon 05 Feb</div>
+                    <div class="unavailable-date">Tue 06 Feb</div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

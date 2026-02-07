@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Dr. Anoop Misra | MediSphere</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <link href="favicon.png" rel="icon">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body { background: #F9FAFB; font-family: 'Poppins', sans-serif; }
+        .navbar-nav .nav-link { font-weight: 600 !important; }
+        .doctor-img { width: 150px; height: 150px; border-radius: 20px; object-fit: cover; box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+
+        .section-box, .doctor-card {
+            background: #fff; padding: 30px; border-radius: 16px; margin-top: 25px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+        .doctor-card { padding: 35px; margin-top: 40px; }
+
+        .btn-custom {
+            background: #E7C1D3; border: none !important; padding: 10px 22px;
+            border-radius: 10px; font-weight: 600; transition: 0.3s;
+        }
+        .btn-custom:hover { background: #d3a8b9; }
+
+        .date-tabs button {
+            border: none; background: #f5f5f5; padding: 10px 22px; border-radius: 8px;
+            margin-right: 15px; margin-bottom: 12px; cursor: pointer; 
+            font-weight: 500; transition: 0.3s;
+        }
+        .date-tabs button:hover { background: #ebd7e0; }
+        .date-tabs .active { background: #e7c1d3 !important; font-weight: 700 !important; }
+
+        .slot-box { padding: 15px; border-radius: 8px; background: #f8f8f8; text-align: center; font-weight: 600; }
+        .unavailable-date {
+            background: #ececec; color: #777; border-radius: 8px;
+            padding: 10px 20px; margin-bottom: 10px; font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOPBAR -->
+    <div class="container-fluid py-2 border-bottom d-none d-lg-block">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-lg-start">
+                    +91 62830 87875 | medisphere@gmail.com
+                </div>
+                <div class="col-md-6 text-end">
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <div class="container-fluid sticky-top bg-white shadow-sm">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light py-3">
+                <a href="#" class="navbar-brand"><h1 class="m-0 text-primary">Medi Sphere</h1></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="nav">
+                    <div class="navbar-nav ms-auto">
+                        <a href="#" class="nav-link">Home</a>
+                        <a href="#" class="nav-link">Find Specialist</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 2 COLUMN -->
+    <div class="container">
+        <div class="row">
+
+            <!-- LEFT SIDE -->
+            <div class="col-md-5">
+
+                <div class="doctor-card text-center">
+                    <img src="doctor2.jpg" class="doctor-img">
+
+                    <h3 class="mt-3">Dr. Anoop Misra</h3>
+                    <h6 class="text-muted">Diabetology | Endocrinology</h6>
+
+                    <p class="mt-3"><strong>Experience:</strong> 40 Years</p>
+                    <p><strong>Fees:</strong> ₹2800</p>
+                </div>
+
+                <div class="section-box">
+                    <h4>About</h4>
+                    <p>
+                        Dr. Anoop Misra is a leading endocrinologist and diabetologist in India...
+                    </p>
+                </div>
+
+                <div class="section-box">
+                    <h4>Education</h4>
+                    <p>MBBS, MD, DM (Endocrinology)</p>
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDE -->
+            <div class="col-md-7">
+                <div class="section-box">
+                    <h4>Schedule Appointment</h4>
+
+                    <div class="mt-3">
+                        <button class="btn-custom">Book Hospital Visit</button>
+                        <button class="btn-custom ms-3">Book Video Consult</button>
+                    </div>
+
+                    <h5 class="mt-4">Select Date</h5>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="date-tabs mt-3">
+                                <button class="active">Wed 04 Feb</button>
+                                <button>Thu 05 Feb</button>
+                                <button>Fri 06 Feb</button>
+                            </div>
+
+                            <div id="slot-section" class="mt-4">
+                                <h6 class="text-muted">Slots Available</h6>
+                                <div class="slot-box mt-3">10:00 AM</div>
+                                <div class="slot-box mt-3">1:00 PM</div>
+                                <div class="slot-box mt-3">4:00 PM</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <h6><strong>Unavailable Dates</strong></h6>
+                            <div class="unavailable-date">Mon 01 Feb</div>
+                            <div class="unavailable-date">Tue 02 Feb</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
