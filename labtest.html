@@ -17,176 +17,242 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
 
-    <!-- Libraries -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <!-- Template -->
     <link href="css/style.css" rel="stylesheet">
+
+    <!-- UPDATED CSS MERGED -->
+    <style>
+        body {
+            background: #F4F7FB;
+        }
+
+        .page-wrapper {
+            width: 100%;
+            max-width: 1300px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .lab-section {
+            display: flex;
+            gap: 30px;
+            align-items: stretch;
+        }
+
+        /* Left Form Section */
+        .form-card {
+            flex: 1;
+            background: #ffffff !important; /* PURE WHITE FORM */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 20px 0 10px;
+            color: #2B5BA8;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        input,
+        select,
+        textarea {
+            border-radius: 8px !important;
+            border: 1px solid #dce1e6 !important;
+            padding: 10px !important;
+        }
+
+        .submit-btn {
+            background: #2B5BA8;
+            padding: 12px;
+            border-radius: 8px;
+            color: #fff;
+            width: 100%;
+            border: none;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        /* Right Side Image — UPDATED */
+        .image-box {
+    flex: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+    height: 100%;       /* FULL HEIGHT OF RIGHT SECTION */
+    max-height: 600px;  /* Looks perfect with your 907x1359 image */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-box img {
+    width: auto;
+    height: 100%;
+    object-fit: contain;   /* show full image without cutting */
+}
+
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .lab-section {
+                flex-direction: column;
+            }
+
+            .image-box {
+                height: 280px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- TOPBAR START -->
+    <!-- TOPBAR -->
     <div class="container-fluid py-2 border-bottom d-none d-lg-block">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-lg-start mb-2 mb-lg-0">
-                    <div class="d-inline-flex align-items-center">
-                        <a class="text-decoration-none text-body pe-3"><i class="bi bi-telephone me-2"></i>+91 62830 87875</a>
-                        <span class="text-body">|</span>
-                        <a class="text-decoration-none text-body px-3"><i class="bi bi-envelope me-2"></i>medisphere@gmail.com</a>
-                    </div>
-                </div>
-                <div class="col-md-6 text-center text-lg-end">
-                    <a class="text-body px-2" href="https://www.instagram.com/kk_homoeo_care_">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                </div>
+        <div class="container d-flex justify-content-between">
+            <div>
+                <i class="bi bi-telephone me-2"></i> +91 62830 87875 |
+                <i class="bi bi-envelope ms-2"></i> medisphere@gmail.com
             </div>
+            <a class="text-body" href="https://www.instagram.com/kk_homoeo_care_"><i class="fab fa-instagram"></i></a>
         </div>
     </div>
-    <!-- TOPBAR END -->
 
-    <!-- NAVBAR START -->
+    <!-- NAVBAR -->
     <div class="container-fluid sticky-top bg-white shadow-sm">
         <div class="container">
-            <nav class="navbar navbar-expand-lg bg-white navbar-light py-3">
+            <nav class="navbar navbar-expand-lg navbar-light bg-white">
                 <a href="index.html" class="navbar-brand">
-                    <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>MEDI SPHERE</h1>
+                    <h1 class="m-0 text-primary"><i class="fa fa-clinic-medical me-2"></i>MEDI SPHERE</h1>
                 </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto py-0">
+                    <div class="navbar-nav ms-auto">
                         <a href="index.html" class="nav-item nav-link">Home</a>
                         <a href="about.html" class="nav-item nav-link">About</a>
                         <a href="service.html" class="nav-item nav-link">Service</a>
                         <a href="price.html" class="nav-item nav-link">Pricing</a>
                         <a href="contact.html" class="nav-item nav-link">Contact</a>
                         <a href="labtest.html" class="nav-item nav-link active">Lab Test</a>
-                         <a href="doctor.html" class="nav-item nav-link">Find Specialist</a>
+                        <a href="doctor.html" class="nav-item nav-link">Find Specialist</a>
                     </div>
                 </div>
             </nav>
         </div>
     </div>
-    <!-- NAVBAR END -->
 
+    <!-- MAIN LAB TEST SECTION -->
+    <div class="page-wrapper">
 
+        <div class="text-center mb-4">
+            <h2 class="text-primary fw-bold">Book Your Lab Test</h2>
+            <p class="text-muted">Fast • Accurate • Trusted Diagnostics</p>
+        </div>
 
-    <!-- ===================== LAB TEST BOOKING FORM ========================= -->
+        <div class="lab-section">
 
-    <div class="container py-5">
-        <h2 class="text-center text-primary mb-4">Book Your Lab Test</h2>
-        <p class="text-center mb-5">Fill the form below to schedule your lab test appointment easily.</p>
+            <!-- LEFT: FORM -->
+            <div class="form-card">
 
-        <div class="card shadow p-4">
-            <form>
+                <div class="section-title">Personal Information</div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Full Name</label>
+                        <input type="text" class="form-control" placeholder="Enter full name">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Phone Number</label>
+                        <input type="tel" class="form-control" placeholder="Enter phone number">
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">First Name</label>
-                        <input type="text" class="form-control p-3" placeholder="Enter first name" required>
+                        <label>Email</label>
+                        <input type="email" class="form-control" placeholder="Enter email">
                     </div>
-
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Last Name</label>
-                        <input type="text" class="form-control p-3" placeholder="Enter last name" required>
+                        <label>Date of Birth</label>
+                        <input type="date" class="form-control">
                     </div>
                 </div>
 
+                <div class="section-title">Test Details</div>
                 <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label fw-bold">Phone Number</label>
-                        <input type="text" class="form-control p-3" placeholder="Enter phone number" required>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label fw-bold">Age</label>
-                        <input type="number" class="form-control p-3" placeholder="Enter age" required>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label fw-bold">Select Date</label>
-                        <input type="date" class="form-control p-3" required>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Address</label>
-                    <textarea class="form-control p-3" rows="3" placeholder="Enter complete address" required></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Nearby Clinic</label>
-                    <select class="form-control p-3" required>
-                        <option selected disabled>Select clinic</option>
-                        <option>Amritsar – Main Branch</option>
-                        <option>Amritsar – Ranjit Avenue</option>
-                        <option>Amritsar – Putlighar</option>
-                        <option>Amritsar – Batala Road</option>
-                    </select>
-                </div>
-
-                <div class="row">
-
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Upload Prescription</label>
-                        <input type="file" class="form-control p-3">
+                        <label>Select Test</label>
+                        <select class="form-control">
+                            <option>Select Test</option>
+                            <option>CBC</option>
+                            <option>Thyroid Profile (T3, T4, TSH)</option>
+                            <option>Lipid Profile</option>
+                            <option>Liver Function Test</option>
+                            <option>Kidney Function Test</option>
+                            <option>Vitamin D</option>
+                        </select>
                     </div>
-
-                  
-
+                    <div class="col-md-6 mb-3">
+                        <label>Preferred Date</label>
+                        <input type="date" class="form-control">
+                    </div>
                 </div>
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary px-5 py-2 mt-3">Book Lab Test</button>
-                </div>
+                <div class="section-title">Address</div>
+                <textarea class="form-control mb-3" rows="2" placeholder="Enter complete address"></textarea>
 
-            </form>
+                <div class="section-title">Upload Prescription (Optional)</div>
+                <input type="file" class="form-control mb-3">
+
+                <button class="submit-btn">Confirm Booking</button>
+            </div>
+
+            <!-- RIGHT: IMAGE -->
+            <div class="image-box">
+                <div class="image-box">
+    <img src="img/lab1.jpg" alt="Lab Test">
+</div>
+
+</div>
+
+            </div>
+
         </div>
     </div>
 
-
-
-    <!-- FOOTER START -->
+    <!-- FOOTER -->
     <div class="container-fluid bg-dark text-light mt-5 py-5">
         <div class="container py-5">
             <div class="row g-5">
                 <div class="col-lg-3 col-md-6">
                     <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 border-secondary mb-4">Get In Touch</h4>
                     <p class="mb-4">You can get in touch with us at our all online platforms like Whatsapp , Instagram , facebook, Linked in, twitter and mainly on our website chat box too.</p>
-                    <!-- <p class="mb-2"><i class="fa fa-map-marker-alt text-primary me-3"></i>123 Street, New York, USA</p> -->
                     <p class="mb-2"><i class="fa fa-envelope text-primary me-3"></i>medispere@gmail.com</p>
                     <p class="mb-0"><i class="fa fa-phone-alt text-primary me-3"></i>+91 62830 87875</p>
                 </div>
+
                 <div class="col-lg-3 col-md-6">
                     <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 border-secondary mb-4">Quick Links</h4>
                     <div class="d-flex flex-column justify-content-start">
                         <a class="text-light mb-2" href="index.html"><i class="fa fa-angle-right me-2"></i>Home</a>
                         <a class="text-light mb-2" href="about.html"><i class="fa fa-angle-right me-2"></i>About Us</a>
                         <a class="text-light mb-2" href="service.html"><i class="fa fa-angle-right me-2"></i>Our Services</a>
-                        <!-- <a class="text-light mb-2" href="#"><i class="fa fa-angle-right me-2"></i>Meet The Team</a>
-                        <a class="text-light mb-2" href="#"><i class="fa fa-angle-right me-2"></i>Latest Blog</a> -->
                         <a class="text-light" href="contact.html"><i class="fa fa-angle-right me-2"></i>Contact Us</a>
                     </div>
                 </div>
-                <!-- <div class="col-lg-3 col-md-6">
-                    <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 border-secondary mb-4">Popular Links</h4>
-                    <div class="d-flex flex-column justify-content-start">
-                        <a class="text-light mb-2" href="#"><i class="fa fa-angle-right me-2"></i>Home</a>
-                        <a class="text-light mb-2" href="#"><i class="fa fa-angle-right me-2"></i>About Us</a>
-                        <a class="text-light mb-2" href="#"><i class="fa fa-angle-right me-2"></i>Our Services</a>
-                        <a class="text-light mb-2" href="#"><i class="fa fa-angle-right me-2"></i>Meet The Team</a>
-                        <a class="text-light mb-2" href="#"><i class="fa fa-angle-right me-2"></i>Latest Blog</a>
-                        <a class="text-light" href="#"><i class="fa fa-angle-right me-2"></i>Contact Us</a>
-                    </div>
-                </div> -->
+
                 <div class="col-lg-3 col-md-6">
                     <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 border-secondary mb-4">Newsletter</h4>
                     <form action="">
@@ -197,9 +263,6 @@
                     </form>
                     <h6 class="text-primary text-uppercase mt-4 mb-3">Follow Us</h6>
                     <div class="d-flex">
-                        <!-- <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-lg btn-primary btn-lg-square rounded-circle me-2" href="#"><i class="fab fa-linkedin-in"></i></a> -->
                         <a class="btn btn-lg btn-primary btn-lg-square rounded-circle" href="https://www.Instagram.com/kk_homoeo_care_"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
@@ -217,7 +280,8 @@
                 </div>
             </div>
         </div>
-   <!-- Footer End -->
+    </div>
+    <!-- Footer End -->
 
 
     <!-- Back to Top -->
@@ -236,5 +300,7 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
 </body>
+
 </html>
