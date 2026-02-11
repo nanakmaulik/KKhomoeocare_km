@@ -59,7 +59,7 @@
         label {
             font-weight: 600;
             margin-bottom: 4px;
-        }
+        } 
 
         input,
         select,
@@ -165,59 +165,59 @@
         <div class="lab-section">
 
             <!-- LEFT: FORM -->
-            <div class="form-card">
+          <div class="form-card">
 
-                <div class="section-title">Personal Information</div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label>Full Name</label>
-                        <input type="text" class="form-control" placeholder="Enter full name">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label>Phone Number</label>
-                        <input type="tel" class="form-control" placeholder="Enter phone number">
-                    </div>
-                </div>
+    <div class="section-title">Personal Information</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Full Name</label>
+            <input id="fullName" type="text" class="form-control" placeholder="Enter full name">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Phone Number</label>
+            <input id="phone" type="tel" class="form-control" placeholder="Enter phone number">
+        </div>
+    </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label>Email</label>
-                        <input type="email" class="form-control" placeholder="Enter email">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label>Date of Birth</label>
-                        <input type="date" class="form-control">
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Email</label>
+            <input id="email" type="email" class="form-control" placeholder="Enter email">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Date of Birth</label>
+            <input id="dob" type="date" class="form-control">
+        </div>
+    </div>
 
-                <div class="section-title">Test Details</div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label>Select Test</label>
-                        <select class="form-control">
-                            <option>Select Test</option>
-                            <option>CBC</option>
-                            <option>Thyroid Profile (T3, T4, TSH)</option>
-                            <option>Lipid Profile</option>
-                            <option>Liver Function Test</option>
-                            <option>Kidney Function Test</option>
-                            <option>Vitamin D</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label>Preferred Date</label>
-                        <input type="date" class="form-control">
-                    </div>
-                </div>
+    <div class="section-title">Test Details</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Select Test</label>
+            <select id="test" class="form-control">
+                <option>Select Test</option>
+                <option>CBC</option>
+                <option>Thyroid Profile (T3, T4, TSH)</option>
+                <option>Lipid Profile</option>
+                <option>Liver Function Test</option>
+                <option>Kidney Function Test</option>
+                <option>Vitamin D</option>
+            </select>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Preferred Date</label>
+            <input id="preferredDate" type="date" class="form-control">
+        </div>
+    </div>
 
-                <div class="section-title">Address</div>
-                <textarea class="form-control mb-3" rows="2" placeholder="Enter complete address"></textarea>
+    <div class="section-title">Address</div>
+    <textarea id="address" class="form-control mb-3" rows="2" placeholder="Enter complete address"></textarea>
 
-                <div class="section-title">Upload Prescription (Optional)</div>
-                <input type="file" class="form-control mb-3">
+    <div class="section-title">Upload Prescription (Optional)</div>
+    <input id="prescription" type="file" class="form-control mb-3">
 
-                <button class="submit-btn">Confirm Booking</button>
-            </div>
+    <button id="submitBtn" class="submit-btn">Confirm Booking</button>
+</div>
 
             <!-- RIGHT: IMAGE -->
             <div class="image-box">
@@ -300,7 +300,63 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+        <!-- Template Javascript -->
+    <script src="js/main.js"></script>
+
+    <!-- FIREBASE CODE HERE (inside body) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDBGtr942h20hiU-fljXs2N-VeSSfkodkY",
+            authDomain: "kkhomoeocare-48bb2.firebaseapp.com",
+            projectId: "kkhomoeocare-48bb2",
+            storageBucket: "kkhomoeocare-48bb2.firebasestorage.app",
+            messagingSenderId: "62076969795",
+            appId: "1:62076969795:web:2255e28210303ad08385f6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.getElementById("submitBtn").addEventListener("click", async () => {
+            const name = document.getElementById("fullName").value;
+            const phone = document.getElementById("phone").value;
+            const email = document.getElementById("email").value;
+            const dob = document.getElementById("dob").value;
+            const test = document.getElementById("test").value;
+            const preferredDate = document.getElementById("preferredDate").value;
+            const address = document.getElementById("address").value;
+            const prescription = document.getElementById("prescription").value;
+
+            try {
+                await addDoc(collection(db, "labTestBookings"), {
+                    name,
+                    phone,
+                    email,
+                    dob,
+                    test,
+                    preferredDate,
+                    address,
+                    prescription,
+                    timestamp: new Date()
+                });
+
+                alert("Lab Test Booking Successfully Saved!");
+            } catch (error) {
+                alert("Error saving booking!");
+                console.log(error);
+            }
+        });
+    </script>
 
 </body>
+</html>
+
+
+</body>
+
+
 
 </html>

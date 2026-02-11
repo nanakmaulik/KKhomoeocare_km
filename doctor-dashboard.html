@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Dashboard</title>
+</head>
+
+<body style="padding: 40px; max-width: 600px; margin: auto;">
+    <h2>Add New Doctor</h2>
+
+    <label>Name:</label>
+    <input id="name" class="form-control"><br>
+
+    <label>Specialization:</label>
+    <input id="specialization" class="form-control"><br>
+
+    <label>Experience (in years):</label>
+    <input id="experience" class="form-control"><br>
+
+    <label>Fees:</label>
+    <input id="fees" class="form-control"><br>
+
+    <label>Profile Image URL:</label>
+    <input id="image" class="form-control"><br>
+
+    <button id="saveBtn" style="margin-top: 10px;">Save Doctor</button>
+
+
+ <script type="module">
+import { db } from "./js/firebase.js";
+import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+document.getElementById("saveBtn").addEventListener("click", saveDoctor);
+
+async function saveDoctor() {
+    try {
+        // Write a new document into "doctorsprofile" collection
+        await addDoc(collection(db, "doctorsprofile"), {
+            name: document.getElementById("name").value,
+            specialization: document.getElementById("specialization").value,
+            experience: document.getElementById("experience").value,
+            fees: document.getElementById("fees").value,
+            image: document.getElementById("image").value
+        });
+
+        alert("Doctor Added Successfully!");
+    } catch (error) {
+        console.error("Error adding doctor:", error);
+        alert("Error adding doctor!");
+    }
+}
+</script>
+
+</body>
+</html>

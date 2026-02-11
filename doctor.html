@@ -86,49 +86,44 @@
     <div class="container py-5">
         <h2 class="text-center text-primary mb-4">Find a Specialist</h2>
 
-        <div class="row g-4">
+        <div class="row g-4" id="doctorList">
 
             <!-- Doctor Card 1 -->
+          <script type="module">
+import { db } from "./js/firebase.js";
+import { collection, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const list = document.getElementById("doctorList");
+
+async function loadDoctors() {
+    const data = await getDocs(collection(db, "doctors"));
+
+    list.innerHTML = ""; // first clear list
+
+    data.forEach(doc => {
+        const d = doc.data();
+
+        list.innerHTML += `
             <div class="col-lg-4 col-md-6">
                 <div class="doctor-card">
-                    <img src="img/doctor1.jpg" class="doctor-img mb-3">
-                    <h4>Dr. Anoop Misra</h4>
-                    <p class="text-muted">Diabetology | Endocrinology</p>
-                    <p><i class="bi bi-briefcase"></i> 40 Years Experience</p>
-                    <p><i class="bi bi-cash"></i> ₹2800 Fees</p>
+                    <img src="${d.image}" class="doctor-img mb-3">
+                    <h4>${d.name}</h4>
+                    <p class="text-muted">${d.specialization}</p>
+                    <p><i class="bi bi-briefcase"></i> ${d.experience} Years Experience</p>
+                    <p><i class="bi bi-cash"></i> ₹${d.fees} Fees</p>
 
-                    <a href="anoop.html" class="doctor-btn mt-2 d-block text-center">View Full Profile</a>
-                    <a href="anoop.html" class="doctor-btn mt-2 d-block text-center">Book Appointment</a>
+                    <a href="#" class="doctor-btn mt-2 d-block text-center">View Full Profile</a>
+                    <a href="#" class="doctor-btn mt-2 d-block text-center">Book Appointment</a>
                 </div>
             </div>
+        `;
+    });
+}
 
-            <!-- Doctor Card 2 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="doctor-card">
-                    <img src="img/doctor2.jpg" class="doctor-img mb-3">
-                    <h4>Dr. Manjinder Sandhu</h4>
-                    <p class="text-muted">Cardiac Sciences</p>
-                    <p><i class="bi bi-briefcase"></i> 35 Years Experience</p>
-                    <p><i class="bi bi-cash"></i> ₹2000 Fees</p>
+loadDoctors();
+</script>
 
-                    <a href="bookappointment_manjinder.html" class="doctor-btn mt-2 d-block text-center">View Full Profile</a>
-                    <a href="bookappointment_manjinder.html" class="doctor-btn mt-2 d-block text-center">Book Appointment</a>
-                </div>
-            </div>
-
-            <!-- Doctor Card 3 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="doctor-card">
-                    <img src="img/doctor3.jpg" class="doctor-img mb-3">
-                    <h4>Dr. Amit Javed</h4>
-                    <p class="text-muted">General Surgery | Oncology</p>
-                    <p><i class="bi bi-briefcase"></i> 25 Years Experience</p>
-                    <p><i class="bi bi-cash"></i> ₹1500 Fees</p>
-
-                    <a href="amit.html".html" class="doctor-btn mt-2 d-block text-center">View Full Profile</a>
-                    <a href="amit.html" class="doctor-btn mt-2 d-block text-center">Book Appointment</a>
-                </div>
-            </div>
 
         </div>
     </div>
