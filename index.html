@@ -26,70 +26,88 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <style>.nav-item .dropdown-menu {
+    min-width: 150px;
+    padding: 10px 0;
+}
+
+.nav-item .dropdown-menu a {
+    font-size: 15px;
+    padding: 10px 20px;
+}
+
+.nav-item .dropdown-menu a:hover {
+    background: #eef4ff;
+    color: #0d6efd;
+}</style>
 </head>
 
 <body>
     <!-- Topbar Start -->
-    <div class="container-fluid py-2 border-bottom d-none d-lg-block">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-lg-start mb-2 mb-lg-0">
-                    <div class="d-inline-flex align-items-center">
-                        <a class="text-decoration-none text-body pe-3" href=""><i class="bi bi-telephone me-2"></i>+91 62830 87875</a>
-                        <span class="text-body">|</span>
-                        <a class="text-decoration-none text-body px-3" href=""><i class="bi bi-envelope me-2"></i>medisphere@gmail.com</a>
-                    </div>
+<div class="container-fluid py-2 border-bottom d-none d-lg-block">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-lg-start mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-decoration-none text-body pe-3" href=""><i class="bi bi-telephone me-2"></i>+91 62830 87875</a>
+                    <span class="text-body">|</span>
+                    <a class="text-decoration-none text-body px-3" href=""><i class="bi bi-envelope me-2"></i>medisphere@gmail.com</a>
                 </div>
-                <div class="col-md-6 text-center text-lg-end">
-                    <div class="d-inline-flex align-items-center">
-                        <!-- <a class="text-body px-2" href="https://www.facebook.com/maulik.mahendru" target="_blank"> -->
-                            <!-- <i class="fab fa-facebook-f"></i>
-                        </a> -->
-                        <!-- <a class="text-body px-2" href="">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a class="text-body px-2" href="">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a> -->
-                        <a class="text-body px-2" href="https://www.Instagram.com/kk_homoeo_care_">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <!-- <a class="text-body ps-2" href="">
-                            <i class="fab fa-youtube"></i>
-                        </a> -->
-                    </div>
+            </div>
+            <div class="col-md-6 text-center text-lg-end">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-body px-2" href="https://www.Instagram.com/kk_homoeo_care_">
+                        <i class="fab fa-instagram"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Topbar End -->
+</div>
+<!-- Topbar End -->
 
 
-    <!-- Navbar Start -->
-    <div class="container-fluid sticky-top bg-white shadow-sm">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
-                <a href="index.html" class="navbar-brand">
-                    <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>MEDI SPHERE</h1>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto py-0">
-                        <a href="index.html" class="nav-item nav-link active">Home</a>
-                        <a href="about.html" class="nav-item nav-link">About</a>
-                        <a href="service.html" class="nav-item nav-link">Service</a>
-                        <a href="price.html" class="nav-item nav-link">Pricing</a>
-                        <a href="contact.html" class="nav-item nav-link">Contact</a>
-                        <a href="labtest.html" class="nav-item nav-link">Lab Test</a>
-                        <a href="doctor.html" class="nav-item nav-link">Find Specialist</a>
-                    </div>
+<!-- Navbar Start -->
+<div class="container-fluid sticky-top bg-white shadow-sm">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0">
+            <a href="index.html" class="navbar-brand">
+                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-clinic-medical me-2"></i>MEDI SPHERE</h1>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                
+                <div class="navbar-nav ms-auto py-0">
+                    <a href="index.html" class="nav-item nav-link active">Home</a>
+                    <a href="about.html" class="nav-item nav-link">About</a>
+                    <a href="service.html" class="nav-item nav-link">Service</a>
+                    <a href="price.html" class="nav-item nav-link">Pricing</a>
+                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    <a href="labtest.html" class="nav-item nav-link">Lab Test</a>
+                    <a href="doctor.html" class="nav-item nav-link">Find Specialist</a>
+
+                    <!-- ⭐ USER ACCOUNT DROPDOWN ADDED HERE -->
+                    <li class="nav-item dropdown ms-3">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" 
+                                 style="width:32px; height:32px; border-radius:50%; border:2px solid #ddd; padding:2px;">
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-end rounded shadow-sm">
+                            <a href="signin.html" class="dropdown-item">Sign In</a>
+                            <a href="signup.html" class="dropdown-item">Sign Up</a>
+                        </div>
+                    </li>
                 </div>
-            </nav>
-        </div>
+            </div>
+        </nav>
     </div>
-    <!-- Navbar End -->
+</div>
+<!-- Navbar End -->
 
 
     <!-- Hero Start -->

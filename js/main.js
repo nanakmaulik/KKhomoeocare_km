@@ -102,3 +102,26 @@
     
 })(jQuery);
 
+import { supabase } from "./supabase.js";
+
+async function uploadDoctorImage(file) {
+  const fileName = `${Date.now()}-${file.name}`;
+
+  const { data, error } = await supabase.storage
+    .from("doctors")
+    .upload(fileName, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
+
+  if (error) {
+    console.error("Upload Error:", error);
+    return null;
+  }
+
+  const publicUrl = supabase.storage
+    .from("doctors")
+    .getPublicUrl(fileName).data.publicUrl;
+
+  return publicUrl;
+}
