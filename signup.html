@@ -142,7 +142,7 @@
         </div>
     </div>
 
-    <script>
+    <!-- <script>
         function signup() {
             let name = document.getElementById("name").value;
             let email = document.getElementById("email").value;
@@ -156,7 +156,56 @@
 
             alert("Account Created Successfully!");
         }
-    </script>
+    </script> -->
+<script type="module">
+import { supabase } from "./js/supabase.js";
 
+async function signup() {
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let phone = document.getElementById("phone").value;
+    let password = document.getElementById("password").value;
+
+    if (!name || !email || !phone || !password) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    // 1️⃣ Create user in Supabase Auth
+    const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+    });
+
+    if (error) {
+        alert("Sign Up Failed: " + error.message);
+        return;
+    }
+
+    const user = data.user;
+
+    // 2️⃣ Insert extra data into public users table
+    const { error: insertError } = await supabase
+        .from("users")
+        .insert([
+            {
+                id: user.id,   // ⭐ VERY IMPORTANT
+                name: name,
+                email: email,
+                phone: phone
+            }
+        ]);
+
+    if (insertError) {
+        alert("Profile Save Failed: " + insertError.message);
+        return;
+    }
+
+    alert("Account Created Successfully! Please verify your email.");
+    window.location.href = "signin.html";
+}
+
+window.signup = signup;
+</script>
 </body>
 </html>

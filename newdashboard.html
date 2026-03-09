@@ -85,6 +85,7 @@
         <div class="menu-item" onclick="showPage('slotsPage')">📅 Appointment Slots</div>
         <div class="menu-item" onclick="showPage('profilePage')">⚙ Edit Doctor Profile</div>
         <div class="menu-item" onclick="showPage('doctorListPage')">👨‍⚕️ Doctors List</div>
+        <div class="menu-item" onclick="showPage('usersPage')">🧑 Users List</div>
     </div>
 
     <div class="content">
@@ -164,9 +165,26 @@
                 <button onclick="updateDoctor()" class="btn btn-primary w-100 mt-3">Update Profile</button>
             </div>
         </div>
+<!--user data table-->
+<div id="usersPage" class="page">
+    <h2>Registered Users</h2>
 
+    <div class="card mt-3">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody id="usersTable"></tbody>
+        </table>
+    </div>
+</div>
+<!--user data table ended-->
         <!-- DOCTOR LIST -->
-        <!-- <div id="doctorListPage" class="page">
+         <div id="doctorListPage" class="page">
             <h2>All Doctors</h2>
             <div id="doctorsContainer" class="row mt-4"></div>
         </div>
@@ -178,8 +196,12 @@ function showPage(id) {
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
     document.getElementById(id).classList.add("active-page");
 }
-</script> -->
-<script>
+</script> 
+
+<script type="module">
+
+import { supabase } from "./js/supabase.js";
+
 async function loadDoctors() {
     const { data, error } = await supabase
         .from("doctors")
@@ -204,16 +226,14 @@ async function loadDoctors() {
         `;
     });
 }
+loadDoctors();
 </script>
-<!-- FIREBASE ADD DOCTOR -->
-
 <script type="module">
-import { db } from "./js/firebase.js";
 import { supabase } from "./js/supabase.js";
-import { collection, addDoc } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+/* ===============================
+   ADD DOCTOR (SUPABASE ONLY)
+================================== */
 
 document.getElementById("saveBtn").addEventListener("click", async function () {
 
@@ -222,76 +242,6 @@ document.getElementById("saveBtn").addEventListener("click", async function () {
     let specVal = document.getElementById("specialization").value;
     let expVal = document.getElementById("experience").value;
     let feesVal = document.getElementById("fees").value;
-
-    let file = document.getElementById("imageFile").files[0]; // IMAGE FILE INPUT
-
-    if (!nameVal || !specVal || !expVal || !feesVal || !mailVal) {
-        alert("Please fill all fields");
-        return;
-    }
-
-    if (!file) {
-        alert("Please upload profile image!");
-        return;
-    }
-
-    // 🔥 Upload image to Firebase Storage
-//         await uploadBytes(storageRef, file);
-// const storageRef = ref(storage, "doctorImages/" + Date.now() + "_" + file.name);
-
-    // 🔥 Get image download URL
-    // let imageURL = await getDownloadURL(storageRef);
-    // Upload to Supabase Storage
-const fileName = `${Date.now()}_${file.name}`;
-
-const { data, error } = await supabase.storage
-  .from("doctors")
-  .upload(fileName, file);
-
-if (error) {
-    alert("Image upload failed!");
-    console.log(error);
-    return;
-}
-
-// Get public image URL
-const { data: urlData } = supabase.storage
-  .from("doctors")
-  .getPublicUrl(fileName);
-
-let imageURL = urlData.publicUrl;
-
-    // 🔥 Save doctor details in Firestore
-    await addDoc(collection(db, "doctorsprofile"), {
-        name: nameVal,
-        email: mailVal,
-        specialization: specVal,
-        experience: expVal,
-        fees: feesVal,
-        image: imageURL,  // uploaded image URL
-        slots: []
-    });
-
-    alert("Doctor added successfully!");
-    location.reload(); // refresh doctor list
-});
-</script>
-
-<!-- DOCTOR LIST + DELETE + EDIT + SLOTS -->
-<script type="module">
-import { db } from "./js/firebase.js";
-import { supabase } from "./js/supabase.js";
-import { collection, addDoc } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-document.getElementById("saveBtn").addEventListener("click", async function () {
-
-    let nameVal = document.getElementById("name").value;
-    let mailVal = document.getElementById("email").value;
-    let specVal = document.getElementById("specialization").value;
-    let expVal = document.getElementById("experience").value;
-    let feesVal = document.getElementById("fees").value;
-
     let file = document.getElementById("imageFile").files[0];
 
     if (!nameVal || !specVal || !expVal || !feesVal || !mailVal) {
@@ -304,15 +254,19 @@ document.getElementById("saveBtn").addEventListener("click", async function () {
         return;
     }
 
-    // SUPABASE UPLOAD
-    const fileName = `${Date.now()}_${file.name}`;
-    const { data, error } = await supabase.storage
-        .from("doctors")
-        .upload(fileName, file);
+    /* ===============================
+       1️⃣ Upload Image to Supabase Storage
+    ================================== */
 
-    if (error) {
+    const fileName = `${Date.now()}_${file.name}`;
+
+    const { error: uploadError } = await supabase.storage
+        .from("doctors")  // make sure bucket name = doctors
+        .upload(`profiles/${fileName}`, file);
+
+    if (uploadError) {
         alert("Image upload failed!");
-        console.log(error);
+        console.log(uploadError);
         return;
     }
 
@@ -320,21 +274,73 @@ document.getElementById("saveBtn").addEventListener("click", async function () {
         .from("doctors")
         .getPublicUrl(fileName);
 
-    let imageURL = urlData.publicUrl;
+    const imageURL = urlData.publicUrl;
 
-    // SAVE IN FIRESTORE
-   await supabase.from("doctors").insert({
-    name: name.value,
-    email: email.value,
-    specialization: specialization.value,
-    experience: experience.value,
-    fees: fees.value,
-    photo: imageURL // uploaded image public URL
-});
+    /* ===============================
+       2️⃣ Insert Doctor into Supabase DB
+    ================================== */
+
+    const { error: insertError } = await supabase
+        .from("doctors")
+        .insert([
+            {
+                name: nameVal,
+                email: mailVal,
+                specialization: specVal,
+                experience: expVal,
+                fees: feesVal,
+                photo: imageURL
+            }
+        ]);
+
+    if (insertError) {
+        alert("Doctor save failed!");
+        console.log(insertError);
+        return;
+    }
 
     alert("Doctor added successfully!");
     location.reload();
 });
 </script>
+
+
+<!--script for user data-->
+<script type="module">
+import { supabase } from "./js/supabase.js";
+
+async function loadUsers() {
+    const { data, error } = await supabase
+        .from("users")
+        .select("*");
+
+    if (error) {
+        console.log(error);
+        alert("Failed to load users");
+        return;
+    }
+
+    let table = document.getElementById("usersTable");
+    table.innerHTML = "";
+
+    data.forEach(user => {
+        table.innerHTML += `
+            <tr>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.phone}</td>
+            </tr>
+        `;
+    });
+}
+
+window.loadUsers = loadUsers;
+
+// jab user page open hoga tab load hoga
+document.querySelector("[onclick=\"showPage('usersPage')\"]")
+    .addEventListener("click", loadUsers);
+
+</script>
+<!--user data script ended-->
 </body>
 </html>

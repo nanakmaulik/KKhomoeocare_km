@@ -121,47 +121,69 @@
     </div>
 </div>
 <!-- Navbar End -->
-    <!-- Doctor List Section -->
-    <div class="container py-5">
-        <h2 class="text-center text-primary mb-4">Find a Specialist</h2>
+ <!-- Doctor List Section -->
+<div class="container py-5">
+ <h2 class="text-center text-primary mb-4">Find a Specialist</h2>
+<div class="row g-4" id="doctorList">
 
-        <div class="row g-4" id="doctorList">
+ <!-- Doctor Card 1 -->
+          
+<script type="module">
 
-            <!-- Doctor Card 1 -->
-          <script type="module">
-import { db } from "./js/firebase.js";
-import { collection, getDocs } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { supabase } from "./js/supabase.js";
 
 const list = document.getElementById("doctorList");
 
-async function loadDoctors() {
-   const data = await getDocs(collection(db, "doctorsprofile"));
+async function loadDoctors(){
 
-    list.innerHTML = ""; // first clear list
+const { data, error } = await supabase
+.from("doctors")
+.select("*")
 
-    data.forEach(doc => {
-        const d = doc.data();
+if(error){
+console.log(error)
+return
+}
 
-        list.innerHTML += `
-            <div class="col-lg-4 col-md-6">
-                <div class="doctor-card">
-                    <img src="${d.image}" class="doctor-img mb-3">
-                    <h4>${d.name}</h4>
-                    <p class="text-muted">${d.specialization}</p>
-                    <p><i class="bi bi-briefcase"></i> ${d.experience} Years Experience</p>
-                    <p><i class="bi bi-cash"></i> ₹${d.fees} Fees</p>
+list.innerHTML="";
 
-                    <a href="#" class="doctor-btn mt-2 d-block text-center">View Full Profile</a>
-                    <a href="#" class="doctor-btn mt-2 d-block text-center">Book Appointment</a>
-                </div>
-            </div>
-        `;
-    });
+data.forEach(d=>{
+
+list.innerHTML += `
+<div class="col-lg-4 col-md-6">
+<div class="doctor-card">
+
+<img src="${d.photo}" class="doctor-img mb-3">
+
+<h4>${d.name}</h4>
+
+<p class="text-muted">${d.specialization}</p>
+
+<p><i class="bi bi-briefcase"></i> ${d.experience} Years Experience</p>
+
+<p><i class="bi bi-cash"></i> ₹${d.fees} Fees</p>
+
+<a href="#" class="doctor-btn mt-2 d-block text-center">
+View Full Profile
+</a>
+
+<a href="#" class="doctor-btn mt-2 d-block text-center">
+Book Appointment
+</a>
+
+</div>
+</div>
+`;
+
+});
+
 }
 
 loadDoctors();
+
 </script>
+
+
 
 
         </div>
@@ -249,6 +271,7 @@ loadDoctors();
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    
 
 </body>
 </html>
