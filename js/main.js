@@ -102,7 +102,7 @@
     
 })(jQuery);
 
-import { supabase } from "./supabase.js";
+// import { supabase } from "./supabase.js";
 
 async function uploadDoctorImage(file) {
   const fileName = `${Date.now()}-${file.name}`;

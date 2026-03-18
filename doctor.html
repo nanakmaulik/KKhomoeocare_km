@@ -159,15 +159,18 @@ list.innerHTML += `
 
 <p class="text-muted">${d.specialization}</p>
 
+<p><i class="bi bi-envelope"></i> ${d.email}</p>
+
 <p><i class="bi bi-briefcase"></i> ${d.experience} Years Experience</p>
 
 <p><i class="bi bi-cash"></i> ₹${d.fees} Fees</p>
 
-<a href="#" class="doctor-btn mt-2 d-block text-center">
+<a href="viewprofile.html" class="doctor-btn mt-2 d-block text-center">
 View Full Profile
 </a>
 
-<a href="#" class="doctor-btn mt-2 d-block text-center">
+<a href="bookappointment.html?doctor=${d.id}" 
+class="doctor-btn mt-2 d-block text-center">
 Book Appointment
 </a>
 
@@ -257,8 +260,12 @@ loadDoctors();
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-
+ <!-- isse doctor ki id url m pass ho jayegi -->
+<script>
+window.bookAppointment = function(id){
+    window.location.href = "book-appointment.html?doctor=" + id;
+}
+</script>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

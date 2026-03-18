@@ -89,6 +89,26 @@ margin-top:10px;
 margin:2px 0;
 flex-grow:1;
 }
+.slot-pill{
+background:#1d2b53;
+color:white;
+padding:8px 12px;
+border-radius:20px;
+display:inline-block;
+margin:6px;
+}
+
+.removeSlot{
+margin-left:10px;
+cursor:pointer;
+color:red;
+font-weight:bold;
+}
+.user-card {
+    border-radius: 12px;
+    background: white;
+    border: none;
+}
 </style>
 </head>
 
@@ -111,7 +131,12 @@ flex-grow:1;
 👨Edit Profile
 </div>
 
-
+<div class="menu" onclick="showPage('slotsPage')">
+📅 Manage Slots
+</div>
+<div class="menu" onclick="showPage('userListPage')">
+👥 Users List
+</div>
 </div>
 
 
@@ -142,6 +167,9 @@ flex-grow:1;
 <label>Fees</label>
 <input id="fees" class="form-control mb-2">
 
+<label>About</label>
+<textarea id="about" class="form-control mb-2"></textarea>
+
 <label>Doctor Image</label>
 <input type="file" id="photo" class="form-control mb-3">
 
@@ -151,7 +179,37 @@ Save Doctor
 
 </div>
 </div>
+<!-- MANAGE SLOTS PAGE -->
 
+<div id="slotsPage" class="page">
+
+<h2>Manage Doctor Slots</h2>
+
+<div class="card mt-3">
+
+<h5 id="slotDoctorName"></h5>
+
+<label>Select Date:</label>
+<input type="date" id="slotDate" class="form-control mb-3" min="">
+
+<label>Add Time Slot:</label>
+<input type="time" id="slotTime" class="form-control mb-3">
+
+<button onclick="addSlot()" class="btn btn-dark w-100 mb-3">
+Add Slot
+</button>
+
+<h5>Current Slots:</h5>
+
+<div id="slotContainer"></div>
+
+<button onclick="saveSlots()" class="btn btn-success w-100 mt-3">
+Save Slots
+</button>
+
+</div>
+
+</div>
 <!-- EDIT PROFILE -->
  <div id="editprofile" class="page">
             <h2>Edit Doctor Profile</h2>
@@ -172,6 +230,9 @@ Save Doctor
                 <label>Fees:</label>
                 <input id="editFees" class="form-control mb-2">
 
+                <label>About:</label>
+                <textarea id="editabout" class="form-control mb-2" rows="4"></textarea>
+
                 <label>Image URL:</label>
                 <input id="editImg" class="form-control mb-2">
 
@@ -179,6 +240,12 @@ Save Doctor
             </div>
         </div>
 
+        <!-- USER LIST -->
+         <div id="userListPage" class="page">
+    <h2>All Registered Users</h2>
+
+    <div id="usersContainer" class="row mt-4"></div>
+</div>
 <!-- DOCTOR LIST -->
 
 <div id="doctorList" class="page">
@@ -186,14 +253,13 @@ Save Doctor
 <h2>All Doctors</h2>
 
 <div id="doctorContainer" class="row mt-4"></div>
-
-
 </div>
 
 
 </div>
 
 <script>
+    
 
 function showPage(id){
 
@@ -214,12 +280,54 @@ document.getElementById(id).classList.add("active")
 <script type="module">
 
 import { supabase } from "./js/supabase.js";
+function toDBDate(dateStr) {
+    // If format already YYYY-MM-DD, return as is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        return dateStr;
+    }
+
+    // If accidentally DD-MM-YYYY came
+    if (dateStr.includes("-")) {
+        const [day, month, year] = dateStr.split("-");
+        return `${year}-${month}-${day}`;
+    }
+
+    // If natural date (Mar 17 2024)
+    const d = new Date(dateStr);
+    return d.toISOString().split("T")[0];
+}
 
 
+
+  /* LOAD USERS */
+ async function loadUsers() {
+    const { data, error } = await supabase
+        .from("users")
+        .select("*");
+
+    const container = document.getElementById("usersContainer");
+    container.innerHTML = "";
+
+    data.forEach(user => {
+        container.innerHTML += `
+            <div class="col-md-4">
+                <div class="card p-3 user-card shadow-sm mb-4">
+
+                    <h5 class="mb-2">👤 ${user.name || "No Name"}</h5>
+
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Phone:</strong> ${user.phone || "Not Provided"}</p>
+
+                    <p><strong>Joined:</strong> 
+                        ${new Date(user.created_at).toLocaleDateString()}
+                    </p>
+
+                </div>
+            </div>
+        `;
+    });
+}
 /* LOAD DOCTORS */
-
-
-
 async function loadDoctors(){
 
 const { data, error } = await supabase
@@ -251,6 +359,8 @@ container.innerHTML += `
 
 <p class="text-muted mb-1">${doc.specialization}</p>
 <p class="text-muted mb-1">${doc.email}</p>
+<p class="text-muted mb-1">${doc.about}</p>
+
 
 <p class="mb-1">Experience : ${doc.experience}</p>
 
@@ -264,8 +374,8 @@ onclick="editDoctor('${doc.id}')">
 Edit Profile
 </button>
 
-<button class="btn btn-info btn-sm"
-onclick="manageSlots('${doc.id}')">
+<button class="btn btn-dark btn-sm"
+onclick="openSlotManager('${doc.id}','${doc.name}')">
 Manage Slots
 </button>
 
@@ -296,10 +406,10 @@ let email=document.getElementById("email").value
 let spec=document.getElementById("spec").value
 let exp=document.getElementById("exp").value
 let fees=document.getElementById("fees").value
-
+let about=document.getElementById("about").value
 let file=document.getElementById("photo").files[0]
 
-if(!name || !email || !spec || !exp || !fees || !file){
+if(!name || !email || !spec || !exp || !fees|| !about || !file){
 
 alert("Fill all fields")
 return
@@ -340,6 +450,7 @@ email:email,
 specialization:spec,
 experience:exp,
 fees:fees,
+about:about,
 photo:imageURL
 
 }])
@@ -379,6 +490,7 @@ document.getElementById("editMail").value = data.email
 document.getElementById("editSpec").value = data.specialization
 document.getElementById("editExp").value = data.experience
 document.getElementById("editFees").value = data.fees
+document.getElementById("editabout").value = data.about
 document.getElementById("editImg").value = data.photo
 
 }
@@ -393,6 +505,7 @@ const email = document.getElementById("editMail").value
 const specialization = document.getElementById("editSpec").value
 const experience = document.getElementById("editExp").value
 const fees = document.getElementById("editFees").value
+const about = document.getElementById("editabout").value
 const photo = document.getElementById("editImg").value
 
 const { error } = await supabase
@@ -403,6 +516,7 @@ email:email,
 specialization:specialization,
 experience:experience,
 fees:fees,
+about:about,
 photo:photo
 })
 .eq("id", doctorId)
@@ -419,6 +533,155 @@ showPage("doctorList")
 loadDoctors()
 
 }
+/* MANAGING SLOTS */
+let currentDoctor = null;
+let slots = [];
+
+/* OPEN SLOT PAGE */
+
+window.openSlotManager = async function(id,name){
+
+    currentDoctor = id;
+
+    showPage("slotsPage");
+
+    document.getElementById("slotDate").min =
+        new Date().toISOString().split("T")[0];
+
+    document.getElementById("slotDoctorName").innerText =
+        "Slots for Dr. " + name;
+
+    const { data, error } = await supabase
+        .from("slots")
+        .select("*")
+        .eq("doctor_id", id);
+
+    slots = data || [];
+
+    normalizeSlots();  // 👈 THIS FIXES THE BUG
+
+    renderSlots();
+}
+
+/* ADD SLOT */
+window.addSlot = function () {
+    const dateInput = document.getElementById("slotDate").value;
+    const timeInput = document.getElementById("slotTime").value;
+
+    if (!dateInput || !timeInput) {
+        alert("Please select date and time");
+        return;
+    }
+
+    // Convert YYYY-MM-DD safely
+    const selectedDate = new Date(dateInput + "T00:00:00");
+
+    // Normalize today's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // ❌ Block past dates
+    if (selectedDate.getTime() < today.getTime()) {
+        alert("❌ Invalid Date! Please select a future date.");
+        return;
+    }
+
+    // ❌ Prevent duplicate slot (Both DB + new slots)
+    const duplicate = slots.find(s => {
+        const dbDate = (s.slot_date || s.date);
+        const dbTime = (s.slot_time || s.time);
+        return dbDate === dateInput && dbTime === timeInput;
+    });
+
+    if (duplicate) {
+        alert("❌ This slot already exists!");
+        return;
+    }
+
+    // Push NEW slot
+    slots.push({
+        date: dateInput,
+        time: timeInput
+    });
+
+    renderSlots();
+};
+function normalizeSlots() {
+    slots = slots.map(s => ({
+        id: s.id || null,
+        date: s.slot_date || s.date,
+        time: s.slot_time || s.time
+    }));
+}
+/* SHOW SLOTS */
+
+function renderSlots(){
+
+let container = document.getElementById("slotContainer")
+
+container.innerHTML=""
+
+slots.forEach((slot,index)=>{
+
+let date = slot.slot_date || slot.date
+let time = slot.slot_time || slot.time
+
+container.innerHTML += `
+<span class="slot-pill">
+${date} ${time}
+<span class="removeSlot"
+onclick="deleteSlot('${slot.id || index}')">
+✖
+</span>
+</span>
+`
+
+})
+
+}
+
+/* REMOVE SLOT */
+
+window.deleteSlot = async function(id){
+
+if(!confirm("Delete this slot?")) return
+
+const { error } = await supabase
+.from("slots")
+.delete()
+.eq("id", id)
+
+if(error){
+alert("Delete failed")
+return
+}
+
+alert("Slot deleted")
+
+openSlotManager(currentDoctor,"")
+
+}
+
+/* SAVE SLOTS */
+window.saveSlots = async function() {
+
+    for (let slot of slots) {
+
+        await supabase
+            .from("slots")
+            .insert([
+                {
+                    doctor_id: currentDoctor,
+                    slot_date: toDBDate(slot.date),
+                    slot_time: slot.time
+                }
+            ]);
+    }
+
+    alert("Slots saved successfully");
+}
+
+
 /* DELETE DOCTOR */
 window.deleteDoctor = async function(id){
 
@@ -439,6 +702,14 @@ alert("Doctor deleted successfully")
 loadDoctors()
 
 }
+
+/* LOAD USERS */
+const userMenu = document.querySelector('.menu[onclick="showPage(\'userListPage\')"]');
+
+userMenu.onclick = () => {
+    showPage("userListPage");
+    loadUsers();
+};
 </script>
 
 

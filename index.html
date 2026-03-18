@@ -89,6 +89,7 @@
                     <a href="contact.html" class="nav-item nav-link">Contact</a>
                     <a href="labtest.html" class="nav-item nav-link">Lab Test</a>
                     <a href="doctor.html" class="nav-item nav-link">Find Specialist</a>
+                    <a href="https://www.delhivery.com/tracking" class="nav-item nav-link">Track Your Order</a>
 
                     <!-- ⭐ USER ACCOUNT DROPDOWN ADDED HERE -->
                     <li class="nav-item dropdown ms-3">
@@ -578,7 +579,7 @@ With trusted professionals and seamless technology, we ensure complete care in o
                                     <i class="fa fa-quote-left fa-2x text-primary"></i>
                                 </div>
                             </div>
-                            <p class="fs-4 fw-normal">KK Homoeo Care has been a true blessing for me. After struggling with chronic migraines for years and trying various treatments, I found relief and lasting results through their homeopathic approach. The personalized care and attention to detail provided by their practitioners have been exceptional. I am grateful for their expertise and highly recommend their services.
+                            <p class="fs-4 fw-normal">Medisphere has been a true blessing for me. After struggling with chronic migraines for years and trying various treatments, I found relief and lasting results through their homeopathic approach. The personalized care and attention to detail provided by their practitioners have been exceptional. I am grateful for their expertise and highly recommend their services.
 
                             </p>
                             <hr class="w-25 mx-auto">
@@ -592,7 +593,7 @@ With trusted professionals and seamless technology, we ensure complete care in o
                                     <i class="fa fa-quote-left fa-2x text-primary"></i>
                                 </div>
                             </div>
-                            <p class="fs-4 fw-normal">I had been dealing with anxiety and panic attacks for a long time until I discovered KK Homoeo Care. The team there not only addressed my symptoms but also took the time to understand the underlying causes. With their gentle and natural approach, I now experience a sense of calm and balance that I never thought was possible. I am truly grateful for the positive impact they have had on my life.</p>
+                            <p class="fs-4 fw-normal">I had been dealing with anxiety and panic attacks for a long time until I discovered Medisphere. The team there not only addressed my symptoms but also took the time to understand the underlying causes. With their gentle and natural approach, I now experience a sense of calm and balance that I never thought was possible. I am truly grateful for the positive impact they have had on my life.</p>
                             <hr class="w-25 mx-auto">
                             <h3>Deepanshu Talwar</h3>
                             <h6 class="fw-normal text-primary mb-3">Software Engineer</h6>
@@ -616,7 +617,7 @@ With trusted professionals and seamless technology, we ensure complete care in o
                                     <i class="fa fa-quote-left fa-2x text-primary"></i>
                                 </div>
                             </div>
-                            <p class="fs-4 fw-normal">After struggling with digestive issues and seeking conventional treatment without much success, I turned to KK Homoeo Care out of desperation. Their homeopathic remedies and personalized dietary recommendations have made a world of difference for me. I no longer suffer from constant discomfort, and my digestion has significantly improved. Thank you, KK Homoeo Care, for restoring my quality of life.</p>
+                            <p class="fs-4 fw-normal">After struggling with digestive issues and seeking conventional treatment without much success, I turned to Medisphere out of desperation. Their remedies and personalized dietary recommendations have made a world of difference for me. I no longer suffer from constant discomfort, and my digestion has significantly improved. Thank you, KK Homoeo Care, for restoring my quality of life.</p>
                             <hr class="w-25 mx-auto">
                             <h3>Dharambir Singh</h3>
                             <h6 class="fw-normal text-primary mb-3">Businessman</h6>
@@ -628,7 +629,7 @@ With trusted professionals and seamless technology, we ensure complete care in o
                                     <i class="fa fa-quote-left fa-2x text-primary"></i>
                                 </div>
                             </div>
-                            <p class="fs-4 fw-normal">KK Homoeo Care has been a lifeline for my family. We have sought their services for various health concerns, ranging from allergies to respiratory issues, and each time, they have exceeded our expectations. Their caring and empathetic practitioners have provided us with effective remedies that have brought relief and long-lasting healing. We are grateful for their expertise and compassionate care.</p>
+                            <p class="fs-4 fw-normal">Medisphere has been a lifeline for my family. We have sought their services for various health concerns, ranging from allergies to respiratory issues, and each time, they have exceeded our expectations. Their caring and empathetic practitioners have provided us with effective remedies that have brought relief and long-lasting healing. We are grateful for their expertise and compassionate care.</p>
                             <hr class="w-25 mx-auto">
                             <h3>Aastha Mahendru</h3>
                             <h6 class="fw-normal text-primary mb-3">Business analyst (Hamburg, Germany)</h6>
@@ -725,7 +726,113 @@ With trusted professionals and seamless technology, we ensure complete care in o
         </div>
     </div> -->
     <!-- Blog End -->
-    
+    <!-- Floating Chatbot Button -->
+<style>
+    #chatbot-btn {
+        position: fixed;
+        right: 25px;
+        bottom: 25px;
+        background: #4A7AFF;
+        color: #fff;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        z-index: 9999;
+    }
+
+    #chatbot-window {
+        position: fixed;
+        right: 25px;
+        bottom: 90px;
+        width: 330px;
+        height: 420px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 9999;
+    }
+
+    #chat-header {
+        background: #4A7AFF;
+        color: white;
+        padding: 12px;
+        font-size: 18px;
+    }
+
+    #chat-body {
+        padding: 10px;
+        height: 280px;
+        overflow-y: auto;
+        font-size: 14px;
+    }
+
+    #chat-input-area {
+        display: flex;
+        border-top: 1px solid #ccc;
+    }
+
+    #chat-input {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        outline: none;
+        font-size: 14px;
+    }
+
+    #send-btn {
+        background: #4A7AFF;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+
+<div id="chatbot-btn">💬</div>
+
+<div id="chatbot-window">
+    <div id="chat-header">Chatbot</div>
+    <div id="chat-body"></div>
+    <div id="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Type a message...">
+        <button id="send-btn">Send</button>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById("chatbot-btn");
+    const windowBox = document.getElementById("chatbot-window");
+    const chatBody = document.getElementById("chat-body");
+    const input = document.getElementById("chat-input");
+    const send = document.getElementById("send-btn");
+
+    btn.onclick = () => {
+        windowBox.style.display = windowBox.style.display === "flex" ? "none" : "flex";
+    };
+
+    // Simple fake chatbot responses
+    send.onclick = () => {
+        let text = input.value.trim();
+        if (text === "") return;
+
+        chatBody.innerHTML += `<div><b>You:</b> ${text}</div>`;
+        input.value = "";
+
+        setTimeout(() => {
+            chatBody.innerHTML += `<div><b>Bot:</b> I'm a demo chatbot 😄</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }, 500);
+    };
+</script>
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light mt-5 py-5">

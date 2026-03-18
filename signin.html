@@ -130,21 +130,50 @@
         <div class="bottom-text">
             Don't have an account? <a href="signup.html">Create Account</a>
         </div>
+        <div class="bottom-text">
+    <a href="forgot_password.html">Forgot Password?</a>
+</div>
     </div>
 
-    <script>
-        function signin() {
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("password").value;
+   <script type="module">
+   import { supabase } from "./js/supabase.js";
 
-            if (!email || !password) {
-                alert("Please fill all fields");
-                return;
-            }
+    async function signin() {
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
 
-            alert("Login Successful!");
+        if (!email || !password) {
+            alert("Please fill all fields");
+            return;
         }
-    </script>
 
+        // REAL LOGIN CHECK (Supabase Auth)
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) {
+            alert("❌ Incorrect email or password!");
+            return;
+        }
+
+        alert("✔️ Login Successful!");
+
+        // If redirected from booking page
+        let redirectUrl = localStorage.getItem("redirectAfterLogin");
+        if (redirectUrl) {
+            localStorage.removeItem("redirectAfterLogin");
+            window.location.href = redirectUrl;
+            return;
+        }
+
+        // Default redirection
+        window.location.href = "index.html";
+    }
+
+    // Make function available globally
+    window.signin = signin;
+</script>
 </body>
 </html>

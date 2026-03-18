@@ -226,10 +226,7 @@
             <label>Email</label>
             <input id="email" type="email" class="form-control" placeholder="Enter email">
         </div>
-        <div class="col-md-6 mb-3">
-            <label>Date of Birth</label>
-            <input id="dob" type="date" class="form-control">
-        </div>
+        
     </div>
 
     <div class="section-title">Test Details</div>
@@ -345,53 +342,76 @@
         <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
-    <!-- FIREBASE CODE HERE (inside body) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBDBGtr942h20hiU-fljXs2N-VeSSfkodkY",
-            authDomain: "kkhomoeocare-48bb2.firebaseapp.com",
-            projectId: "kkhomoeocare-48bb2",
-            storageBucket: "kkhomoeocare-48bb2.firebasestorage.app",
-            messagingSenderId: "62076969795",
-            appId: "1:62076969795:web:2255e28210303ad08385f6"
-        };
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+<script>
+// ---- CREATE CLIENT SAFELY ----
+const client = supabase.createClient(
+    "https://vwvskyxthnwscelhxvma.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3dnNreXh0aG53c2NlbGh4dm1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1Njk4MjQsImV4cCI6MjA4NzE0NTgyNH0.uwcDR2hTCy_17nCn4i_B7pe3L8LsdQd8pjupJpkxl9g"
+);
 
-        document.getElementById("submitBtn").addEventListener("click", async () => {
-            const name = document.getElementById("fullName").value;
-            const phone = document.getElementById("phone").value;
-            const email = document.getElementById("email").value;
-            const dob = document.getElementById("dob").value;
-            const test = document.getElementById("test").value;
-            const preferredDate = document.getElementById("preferredDate").value;
-            const address = document.getElementById("address").value;
-            const prescription = document.getElementById("prescription").value;
+document.getElementById("submitBtn").addEventListener("click", async () => {
 
-            try {
-                await addDoc(collection(db, "labTestBookings"), {
-                    name,
-                    phone,
-                    email,
-                    dob,
-                    test,
-                    preferredDate,
-                    address,
-                    prescription,
-                    timestamp: new Date()
-                });
+    const fullName = document.getElementById("fullName").value;
+    const phone = document.getElementById("phone").value;
+    const email = document.getElementById("email").value;
+    const test = document.getElementById("test").value;
+    const preferredDate = document.getElementById("preferredDate").value;
+    const address = document.getElementById("address").value;
+    const prescriptionFile = document.getElementById("prescription").files[0];
 
-                alert("Lab Test Booking Successfully Saved!");
-            } catch (error) {
-                alert("Error saving booking!");
-                console.log(error);
-            }
-        });
-    </script>
+    // ---- FIX DATE FORMAT ----
+    let correctDate = preferredDate; // YYYY-MM-DD (browser already gives correct)
+    
+    // ---- UPLOAD PRESCRIPTION ----
+    let prescriptionUrl = null;
+
+    if (prescriptionFile) {
+        const fileName = Date.now() + "_" + prescriptionFile.name;
+
+        const { data: uploadData, error: uploadError } = await client
+            .storage
+            .from("prescriptions")  // bucket name must exist
+            .upload(fileName, prescriptionFile);
+
+        if (uploadError) {
+            alert("Failed to upload prescription");
+            console.log(uploadError);
+            return;
+        }
+
+        prescriptionUrl = client
+            .storage
+            .from("prescriptions")
+            .getPublicUrl(fileName).data.publicUrl;
+    }
+
+   const { data, error } = await client
+  .from("labtestbookings")
+  .insert([
+    {
+      name: fullName,
+      phone: phone,
+      email: email,
+      test: test,
+      preferreddate: correctDate,
+      address: address,
+      prescription: prescriptionUrl
+    }
+  ]);
+
+    if (error) {
+        alert("Error saving booking!");
+        console.log(error);
+    } else {
+        alert("Lab Test Booked Successfully!");
+    }
+
+});
+</script>
 
 </body>
 </html>
