@@ -109,6 +109,65 @@ font-weight:bold;
     background: white;
     border: none;
 }
+/* LAB TEST BOOKING CARDS */
+.lab-card {
+    border: none;
+    border-radius: 14px;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+.lab-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* Test Title */
+.lab-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1d2b53;
+    margin-bottom: 10px;
+}
+
+/* Info lines */
+.lab-info {
+    font-size: 14px;
+    margin: 4px 0;
+    color: #444;
+}
+
+/* Label bold */
+.lab-info strong {
+    color: #000;
+}
+
+/* Prescription button */
+.prescription-btn {
+    background: #1d2b53;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    display: inline-block;
+    margin-top: 6px;
+    transition: 0.3s;
+}
+
+.prescription-btn:hover {
+    background: #111d40;
+}
+
+/* Date and footer text */
+.lab-date {
+    font-size: 13px;
+    color: #666;
+    margin-top: 10px;
+}
 </style>
 </head>
 
@@ -136,6 +195,12 @@ font-weight:bold;
 </div>
 <div class="menu" onclick="showPage('userListPage')">
 👥 Users List
+</div>
+<div class="menu" onclick="showPage('labtestPage')">
+🧪 Lab Test Bookings
+</div>
+<div class="menu" onclick="showPage('appointmentPage'); loadAppointments();">
+    📅 Appointments
 </div>
 </div>
 
@@ -246,6 +311,17 @@ Save Slots
 
     <div id="usersContainer" class="row mt-4"></div>
 </div>
+<!-- LABTEST BOOKING LIST -->
+<div id="labtestPage" class="page">
+    <h2>Lab Test Bookings</h2>
+    <div id="labtestContainer" class="row mt-4"></div>
+</div>
+<!-- APPOINTMENT LIST -->
+<div id="appointmentPage" class="page">
+    <h3 class="mb-4">Appointments</h3>
+    <div class="row" id="appointmentList"></div>
+</div>
+
 <!-- DOCTOR LIST -->
 
 <div id="doctorList" class="page">
@@ -710,6 +786,116 @@ userMenu.onclick = () => {
     showPage("userListPage");
     loadUsers();
 };
+
+
+/* MENU CLICK PAR LABTEST PAGE LOAD KRANA */
+const labTestMenu = document.querySelector('.menu[onclick="showPage(\'labtestPage\')"]');
+
+labTestMenu.onclick = () => {
+    showPage("labtestPage");
+    loadLabTests();
+};
+
+/* LOAD LAB TEST BOOKINGS */
+async function loadLabTests() {
+    const { data, error } = await supabase
+        .from("labtestbookings")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    const container = document.getElementById("labtestContainer");
+    container.innerHTML = "";
+
+    if (error) {
+        console.log(error);
+        return;
+    }
+
+    data.forEach(test => {
+        container.innerHTML += `
+    <div class="col-md-4">
+        <div class="lab-card">
+
+            <div class="lab-title">🧪 ${test.test}</div>
+
+            <p class="lab-info"><strong>Patient:</strong> ${test.name}</p>
+            <p class="lab-info"><strong>Phone:</strong> ${test.phone}</p>
+            <p class="lab-info"><strong>Email:</strong> ${test.email || "N/A"}</p>
+
+            <p class="lab-info"><strong>Preferred Date:</strong> 
+                ${test.preferreddate 
+                    ? new Date(test.preferreddate).toLocaleDateString() 
+                    : "N/A"}
+            </p>
+
+            <p class="lab-info"><strong>Address:</strong> ${test.address}</p>
+
+            <p class="lab-info"><strong>Prescription:</strong><br>
+                ${
+                    test.prescription
+                        ? `<a href="${test.prescription}" target="_blank" class="prescription-btn">View Prescription</a>`
+                        : "No File Uploaded"
+                }
+            </p>
+
+            <div class="lab-date">
+                <strong>Booked On:</strong> 
+                ${new Date(test.created_at).toLocaleDateString()}
+            </div>
+
+        </div>
+    </div>
+`;
+    });
+}
+
+// LOAD APPOINTMENTS
+window.loadAppointments = async function() {
+
+    const container = document.getElementById("appointmentList");
+    container.innerHTML = "<p>Loading...</p>";
+
+    const { data, error } = await supabase
+        .from("appointments")
+        .select(`
+            *,
+            doctors ( name )
+        `)
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.log(error);
+        container.innerHTML = "<p>Error loading appointments</p>";
+        return;
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(app => {
+        container.innerHTML += `
+        <div class="col-md-4 mb-4">
+            <div class="lab-card">
+
+                <div class="lab-title">📅 Appointment</div>
+
+                <p class="lab-info"><strong>Patient:</strong> ${app.patientname}</p>
+                <p class="lab-info"><strong>Doctor:</strong> ${app.doctors?.name || "N/A"}</p>
+
+                <p class="lab-info"><strong>Phone:</strong> ${app.phone}</p>
+
+                <p class="lab-info"><strong>Email:</strong> ${app.patientemail}</p>
+
+                <p class="lab-info"><strong>Date:</strong> 
+                    ${new Date(app.appointmentdate).toLocaleDateString()}
+                </p>
+
+                <p class="lab-info"><strong>Time:</strong> ${app.appointmenttime}</p>
+
+            </div>
+        </div>
+        `;
+    });
+}
 </script>
 
 
