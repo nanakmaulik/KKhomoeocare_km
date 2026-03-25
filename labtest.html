@@ -35,10 +35,10 @@
         }
 
         .lab-section {
-            display: flex;
-            gap: 30px;
-            align-items: stretch;
-        }
+    display: flex;
+    gap: 30px;
+    align-items: flex-start; /* ✔ FIXED */
+}
 
         /* Left Form Section */
         .form-card {
@@ -125,7 +125,12 @@
 .nav-item .dropdown-menu a:hover {
     background: #eef4ff;
     color: #0d6efd;
-}</style>
+}
+#timeSlotSection {
+    
+    margin-top: 15px;
+}
+</style>
 </head>
 
 <body>
@@ -248,6 +253,28 @@
             <input id="preferredDate" type="date" class="form-control">
         </div>
     </div>
+    <div class="section-title">Sample Collection Type</div>
+
+<div class="mb-3">
+    <input type="radio" name="collectionType" value="Home Sample" id="homeSample" onchange="toggleTimeSlot()">
+<label for="homeSample">Home Sample Collection</label>
+</div>
+
+<div class="mb-3">
+    <input type="radio" name="collectionType" value="Lab Visit" id="labVisit" onchange="toggleTimeSlot()">
+<label for="labVisit">Visit Lab</label>
+</div>
+<div id="timeSlotSection" >
+        <div class="section-title">Select Time Slot</div>
+    <select id="timeSlot" name="time_slot" class="form-control mb-3">
+    <option value="">Select Time Slot</option>
+    <option>08:00 AM - 10:00 AM</option>
+    <option>10:00 AM - 12:00 PM</option>
+    <option>12:00 PM - 02:00 PM</option>
+    <option>02:00 PM - 04:00 PM</option>
+    <option>04:00 PM - 06:00 PM</option>
+</select>
+</div>
 
     <div class="section-title">Address</div>
     <textarea id="address" class="form-control mb-3" rows="2" placeholder="Enter complete address"></textarea>
@@ -260,16 +287,10 @@
 
             <!-- RIGHT: IMAGE -->
             <div class="image-box">
-                <div class="image-box">
     <img src="img/lab1.jpg" alt="Lab Test">
 </div>
-
-</div>
-
-            </div>
-
-        </div>
-    </div>
+        </div>        <!-- closes lab-section -->
+    </div>            <!-- closes page-wrapper -->
 
     <!-- FOOTER -->
     <div class="container-fluid bg-dark text-light mt-5 py-5">
@@ -337,12 +358,12 @@
     <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+   
+   
         <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -360,6 +381,8 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const test = document.getElementById("test").value;
     const preferredDate = document.getElementById("preferredDate").value;
+    const collectionType = document.querySelector('input[name="collectionType"]:checked')?.value;
+    const timeSlot = document.getElementById("timeSlot").value;
     const address = document.getElementById("address").value;
     const prescriptionFile = document.getElementById("prescription").files[0];
 
@@ -388,6 +411,14 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
             .from("prescriptions")
             .getPublicUrl(fileName).data.publicUrl;
     }
+    if (!collectionType) {
+    alert("Please select sample collection type");
+    return;
+}
+if (collectionType === "Home Sample" && !timeSlot) {
+    alert("Please select time slot for home collection");
+    return;
+}
 
    const { data, error } = await client
   .from("labtestbookings")
@@ -399,7 +430,9 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
       test: test,
       preferreddate: correctDate,
       address: address,
-      prescription: prescriptionUrl
+      prescription: prescriptionUrl,
+      collection_type: collectionType,
+      time_slot: timeSlot
     }
   ]);
 
@@ -411,14 +444,16 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
     }
 
 });
+// ---- DISABLE PAST DATES ----
+const today = new Date().toISOString().split("T")[0];
+document.getElementById("preferredDate").setAttribute("min", today);
+
+function toggleTimeSlot() {
+    document.getElementById("timeSlotSection").style.display = "block";
+}
 </script>
 
 </body>
 </html>
 
 
-</body>
-
-
-
-</html>

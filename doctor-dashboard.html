@@ -116,8 +116,13 @@ font-weight:bold;
     padding: 20px;
     background: #ffffff;
     box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-    transition: all 0.3s ease-in-out;
-    position: relative;
+    transition: 0.3s;
+
+    height: 100%;  
+    width:100%;            /* FIX 1: equal height */
+    display: flex;             /* FIX 2 */
+    flex-direction: column;    /* FIX 3 */
+    justify-content: space-between;
 }
 
 .lab-card:hover {
@@ -131,6 +136,13 @@ font-weight:bold;
     font-weight: 600;
     color: #1d2b53;
     margin-bottom: 10px;
+}
+#labtestContainer .col-md-4 {
+    display: flex;
+}
+
+#labtestContainer .lab-card {
+    flex: 1;
 }
 
 /* Info lines */
@@ -314,7 +326,7 @@ Save Slots
 <!-- LABTEST BOOKING LIST -->
 <div id="labtestPage" class="page">
     <h2>Lab Test Bookings</h2>
-    <div id="labtestContainer" class="row mt-4"></div>
+    <div id="labtestContainer" class="row g-4 mt-4"></div>
 </div>
 <!-- APPOINTMENT LIST -->
 <div id="appointmentPage" class="page">
@@ -813,7 +825,7 @@ async function loadLabTests() {
 
     data.forEach(test => {
         container.innerHTML += `
-    <div class="col-md-4">
+    <div class="col-md-4 d-flex">
         <div class="lab-card">
 
             <div class="lab-title">🧪 ${test.test}</div>
@@ -827,8 +839,15 @@ async function loadLabTests() {
                     ? new Date(test.preferreddate).toLocaleDateString() 
                     : "N/A"}
             </p>
+            <p class="lab-info"><strong>Collection:</strong> ${test.collection_type}</p>
 
-            <p class="lab-info"><strong>Address:</strong> ${test.address}</p>
+<p class="lab-info">
+    <strong>Time Slot:</strong> 
+  <p class="lab-info">
+    ${test.time_slot ? test.time_slot : "No Slot Selected"}
+</p>
+</p>
+<p class="lab-info"><strong>Address:</strong> ${test.address}</p>
 
             <p class="lab-info"><strong>Prescription:</strong><br>
                 ${
@@ -873,7 +892,7 @@ window.loadAppointments = async function() {
 
     data.forEach(app => {
         container.innerHTML += `
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4 col-sm-6 col-12 d-flex">
             <div class="lab-card">
 
                 <div class="lab-title">📅 Appointment</div>
