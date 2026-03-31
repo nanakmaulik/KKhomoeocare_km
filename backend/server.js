@@ -134,7 +134,7 @@ app.post("/book-online-appointment", async (req, res) => {
       slot_id
     } = req.body;
 
-    const meetLink = generateMeetLink();
+    const meetLink = await createGoogleMeetLink(appointmentdate, appointmenttime);
 
     const { data, error } = await supabase
       .from("appointments")
@@ -182,6 +182,53 @@ await supabase
     });
   }
 });
+// generate google meet link
+import { google } from "googleapis";
+import fs from "fs";
+
+const SCOPES = ["https://www.googleapis.com/auth/calendar"];
+
+const auth = new google.auth.GoogleAuth({
+  keyFile: "./service-account.json", // JSON file ka naam
+  scopes: SCOPES
+});
+
+const calendar = google.calendar({ version: "v3", auth });
+
+async function createGoogleMeetLink(appointmentdate, appointmenttime) {
+
+  const startDateTime = new Date(`${appointmentdate}T${appointmenttime}:00`);
+  const endDateTime = new Date(startDateTime.getTime() + 30 * 60000);
+
+  const event = {
+    summary: "MediSphere Online Consultation",
+    description: "Your online doctor appointment",
+    start: {
+      dateTime: startDateTime.toISOString(),
+      timeZone: "Asia/Kolkata"
+    },
+    end: {
+      dateTime: endDateTime.toISOString(),
+      timeZone: "Asia/Kolkata"
+    },
+    conferenceData: {
+      createRequest: {
+        requestId: Math.random().toString(36).substring(2, 15),
+        conferenceSolutionKey: {
+          type: "hangoutsMeet"
+        }
+      }
+    }
+  };
+
+  const response = await calendar.events.insert({
+    calendarId: "primary",
+    resource: event,
+    conferenceDataVersion: 1
+  });
+
+  return response.data.hangoutLink;
+}
 /******************************
  * START SERVER
  ******************************/
