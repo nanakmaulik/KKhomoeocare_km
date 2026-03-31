@@ -5,10 +5,12 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 import express from "express";
 import cors from "cors";
-import fetch from "node-fetch";
+
 import https from "https";
 import nodemailer from "nodemailer";
 import { createClient } from "@supabase/supabase-js";
+import dotenv from "dotenv";
+dotenv.config();
 
 /******************************
  * EXPRESS SETUP
@@ -61,12 +63,65 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false
   }
 });
-
+app.get("/", (req, res) => {
+  res.send("MediSphere Backend Running 🚀");
+});
 /******************************
  * MAIN API
  ******************************/
-app.post("/book-video-appointment", async (req, res) => {
-  console.log("API HIT HO RAHI HAI 🟢");
+
+
+app.post("/book-offline-appointment", async (req, res) => {
+  console.log("OFFLINE API HIT 🟢");
+
+  try {
+    const {
+      patientname,
+      email,
+      phone,
+      appointmentdate,
+      appointmenttime,
+      doctor_id,
+      slot_id
+    } = req.body;
+
+    const { data, error } = await supabase
+      .from("appointments")
+      .insert([
+        {
+          patientname,
+          patientemail: email,
+          phone,
+          appointmentdate,
+          appointmenttime,
+          doctor_id,
+          slot_id,
+          appointment_type: "offline",
+          meet_link: null,
+          status: "pending"
+        }
+      ]);
+      await supabase
+  .from("slots")
+  .update({ is_booked: true })
+  .eq("id", slot_id);
+
+    if (error) throw error;
+
+    res.json({ success: true, message: "Offline appointment booked successfully" });
+
+  } catch (err) {
+    console.error("ERR:", err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+});
+
+app.post("/book-online-appointment", async (req, res) => {
+  console.log("ONLINE API HIT 🟢");
 
   try {
     const {
@@ -81,51 +136,35 @@ app.post("/book-video-appointment", async (req, res) => {
 
     const meetLink = generateMeetLink();
 
-    /******************************
-     * INSERT INTO SUPABASE
-     ******************************/
     const { data, error } = await supabase
       .from("appointments")
       .insert([
         {
           patientname,
-          email,
+          patientemail: email,
           phone,
           appointmentdate,
           appointmenttime,
           doctor_id,
           slot_id,
-          meet_link: meetLink
+          appointment_type: "online",
+          meet_link: meetLink,
+          status: "pending"
         }
       ]);
-
+await supabase
+  .from("slots")
+  .update({ is_booked: true })
+  .eq("id", slot_id);
     if (error) throw error;
 
-    /******************************
-     * SEND EMAIL — PATIENT
-     ******************************/
+    // Email patient (optional)
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: "Appointment Confirmed",
+      subject: "Online Appointment Confirmed",
       html: `
-        <h2>Your Appointment is Confirmed</h2>
-        <p><strong>Date:</strong> ${appointmentdate}</p>
-        <p><strong>Time:</strong> ${appointmenttime}</p>
-        <p><strong>Meet Link:</strong> <a href="${meetLink}">${meetLink}</a></p>
-      `
-    });
-
-    /******************************
-     * SEND EMAIL — DOCTOR
-     ******************************/
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: "doctor@gmail.com", // later dynamic
-      subject: "New Appointment",
-      html: `
-        <h2>New Appointment</h2>
-        <p><strong>Patient:</strong> ${patientname}</p>
+        <h2>Your Online Appointment is Confirmed</h2>
         <p><strong>Date:</strong> ${appointmentdate}</p>
         <p><strong>Time:</strong> ${appointmenttime}</p>
         <p><strong>Meet Link:</strong> <a href="${meetLink}">${meetLink}</a></p>
@@ -143,7 +182,6 @@ app.post("/book-video-appointment", async (req, res) => {
     });
   }
 });
-
 /******************************
  * START SERVER
  ******************************/

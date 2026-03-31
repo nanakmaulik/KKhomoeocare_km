@@ -331,7 +331,7 @@ Save Slots
 <!-- APPOINTMENT LIST -->
 <div id="appointmentPage" class="page">
     <h3 class="mb-4">Appointments</h3>
-    <div class="row" id="appointmentList"></div>
+   <div class="row g-4 mt-4" id="appointmentList"></div>
 </div>
 
 <!-- DOCTOR LIST -->
@@ -421,7 +421,7 @@ async function loadDoctors(){
 const { data, error } = await supabase
 .from("doctors")
 .select("*")
-
+.eq("is_deleted", false)
 if(error){
 console.log(error)
 return
@@ -777,15 +777,16 @@ if(!confirm("Are you sure you want to delete this doctor?")) return
 
 const { error } = await supabase
 .from("doctors")
-.delete()
+.update({ is_deleted: true })
 .eq("id", id)
 
 if(error){
-alert("Delete failed")
+console.log(error)
+alert("Soft delete failed")
 return
 }
 
-alert("Doctor deleted successfully")
+alert("Doctor deleted successfully (soft delete)")
 
 loadDoctors()
 
@@ -809,67 +810,132 @@ labTestMenu.onclick = () => {
 };
 
 /* LOAD LAB TEST BOOKINGS */
+/* LOAD LAB TEST BOOKINGS */
 async function loadLabTests() {
+
+    const container = document.getElementById("labtestContainer");
+    container.innerHTML = "<p>Loading...</p>";
+
     const { data, error } = await supabase
         .from("labtestbookings")
         .select("*")
         .order("created_at", { ascending: false });
 
-    const container = document.getElementById("labtestContainer");
-    container.innerHTML = "";
-
     if (error) {
         console.log(error);
+        container.innerHTML = "<p>Error loading lab tests</p>";
         return;
     }
 
+    container.innerHTML = "";
+
     data.forEach(test => {
+
+        let status = test.status || "pending";
+
         container.innerHTML += `
-    <div class="col-md-4 d-flex">
-        <div class="lab-card">
+        <div class="col-md-4 d-flex">
+            <div class="lab-card">
 
-            <div class="lab-title">🧪 ${test.test}</div>
+                <div class="lab-title">🧪 ${test.test}</div>
 
-            <p class="lab-info"><strong>Patient:</strong> ${test.name}</p>
-            <p class="lab-info"><strong>Phone:</strong> ${test.phone}</p>
-            <p class="lab-info"><strong>Email:</strong> ${test.email || "N/A"}</p>
+                <p class="lab-info"><strong>Patient:</strong> ${test.name}</p>
+                <p class="lab-info"><strong>Phone:</strong> ${test.phone}</p>
+                <p class="lab-info"><strong>Email:</strong> ${test.email || "N/A"}</p>
 
-            <p class="lab-info"><strong>Preferred Date:</strong> 
-                ${test.preferreddate 
-                    ? new Date(test.preferreddate).toLocaleDateString() 
-                    : "N/A"}
-            </p>
-            <p class="lab-info"><strong>Collection:</strong> ${test.collection_type}</p>
+                <p class="lab-info"><strong>Preferred Date:</strong> 
+                    ${test.preferreddate 
+                        ? new Date(test.preferreddate).toLocaleDateString() 
+                        : "N/A"}
+                </p>
 
-<p class="lab-info">
-    <strong>Time Slot:</strong> 
-  <p class="lab-info">
-    ${test.time_slot ? test.time_slot : "No Slot Selected"}
-</p>
-</p>
-<p class="lab-info"><strong>Address:</strong> ${test.address}</p>
+                <p class="lab-info"><strong>Collection:</strong> ${test.collection_type}</p>
 
-            <p class="lab-info"><strong>Prescription:</strong><br>
+                <p class="lab-info"><strong>Time Slot:</strong> 
+                    ${test.time_slot ? test.time_slot : "No Slot Selected"}
+                </p>
+
+                <p class="lab-info"><strong>Address:</strong> ${test.address || "N/A"}</p>
+
+                <p class="lab-info"><strong>Prescription:</strong><br>
+                    ${
+                        test.prescription
+                            ? `<a href="${test.prescription}" target="_blank" class="prescription-btn">View Prescription</a>`
+                            : "No File Uploaded"
+                    }
+                </p>
+
+                <p class="lab-info">
+                    <strong>Status:</strong>
+                    <span class="badge ${status === "completed" ? "bg-success" : "bg-warning"}">
+                        ${status.toUpperCase()}
+                    </span>
+                </p>
+
                 ${
-                    test.prescription
-                        ? `<a href="${test.prescription}" target="_blank" class="prescription-btn">View Prescription</a>`
-                        : "No File Uploaded"
+                    status === "pending"
+                    ? `
+                        <button class="btn btn-success btn-sm w-100"
+                            onclick="markLabTestCompleted('${test.id}')">
+                            Mark as Completed
+                        </button>
+                    `
+                    : `
+                        <button class="btn btn-danger btn-sm w-100"
+                            onclick="deleteLabTest('${test.id}')">
+                            Delete Lab Test
+                        </button>
+                    `
                 }
-            </p>
 
-            <div class="lab-date">
-                <strong>Booked On:</strong> 
-                ${new Date(test.created_at).toLocaleDateString()}
+                <div class="lab-date mt-2">
+                    <strong>Booked On:</strong> 
+                    ${new Date(test.created_at).toLocaleDateString()}
+                </div>
+
             </div>
-
         </div>
-    </div>
-`;
+        `;
     });
 }
+// MARK LAB TEST COMPLETED
+window.markLabTestCompleted = async function(id) {
 
+    const { error } = await supabase
+        .from("labtestbookings")
+        .update({ status: "completed" })
+        .eq("id", id);
+
+    if (error) {
+        console.log(error);
+        alert("Error updating lab test status");
+        return;
+    }
+
+    alert("Lab Test marked as Completed!");
+    loadLabTests();
+};
+// DELETE LAB TEST
+window.deleteLabTest = async function(id) {
+
+    if (!confirm("Are you sure you want to delete this lab test booking?")) return;
+
+    const { error } = await supabase
+        .from("labtestbookings")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+        console.log(error);
+        alert("Error deleting lab test booking");
+        return;
+    }
+
+    alert("Lab Test booking deleted successfully!");
+    loadLabTests();
+};
 // LOAD APPOINTMENTS
-window.loadAppointments = async function() {
+window.loadAppointments = async function () {
 
     const container = document.getElementById("appointmentList");
     container.innerHTML = "<p>Loading...</p>";
@@ -891,6 +957,9 @@ window.loadAppointments = async function() {
     container.innerHTML = "";
 
     data.forEach(app => {
+
+        let status = app.status || "pending";
+
         container.innerHTML += `
         <div class="col-md-4 col-sm-6 col-12 d-flex">
             <div class="lab-card">
@@ -904,17 +973,84 @@ window.loadAppointments = async function() {
 
                 <p class="lab-info"><strong>Email:</strong> ${app.patientemail}</p>
 
-                <p class="lab-info"><strong>Date:</strong> 
+                <p class="lab-info"><strong>Date:</strong>
                     ${new Date(app.appointmentdate).toLocaleDateString()}
                 </p>
 
                 <p class="lab-info"><strong>Time:</strong> ${app.appointmenttime}</p>
+
+                <p class="lab-info">
+                    <strong>Status:</strong>
+                    <span class="badge ${status === "completed" ? "bg-success" : "bg-warning"}">
+                        ${status.toUpperCase()}
+                    </span>
+                </p>
+                <p class="lab-info"><strong>Type:</strong> ${app.appointment_type || "offline"}</p>
+
+${
+  app.meet_link 
+  ? `<a href="${app.meet_link}" target="_blank" class="prescription-btn">Join Meet</a>`
+  : ""
+}
+
+                ${
+                    status === "pending" 
+                    ? `
+                    <button class="btn btn-success btn-sm w-100" onclick="markCompleted('${app.id}')">
+                        Mark as Completed
+                    </button>
+                    `
+                    : `
+                    <button class="btn btn-danger btn-sm w-100" onclick="deleteAppointment('${app.id}')">
+                        Delete Appointment
+                    </button>
+                    `
+                }
 
             </div>
         </div>
         `;
     });
 }
+
+// MARK COMPLETED APPOINTMENTS
+window.markCompleted = async function(id) {
+
+    // 1) Update DB first
+    const { data, error } = await supabase
+        .from("appointments")
+        .update({ status: "completed" })
+        .eq("id", id);
+
+    if (error) {
+        console.log(error);
+        alert("Error updating status");
+        return;
+    }
+
+    // 2) UI ko turant refresh karo
+    loadAppointments();
+};
+// DELETE APPOINTMENTS
+window.deleteAppointment = async function(id) {
+
+    if (!confirm("Are you sure?")) return;
+
+    const { data, error } = await supabase
+        .from("appointments")
+        .delete()
+        .match({ id: id }); // <-- FIX
+
+    console.log("DELETE ERROR:", error);
+
+    if (error) {
+        alert("Supabase delete error — check console");
+        return;
+    }
+
+    alert("Appointment deleted");
+    loadAppointments();
+};
 </script>
 
 

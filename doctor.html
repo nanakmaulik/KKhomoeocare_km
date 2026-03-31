@@ -134,11 +134,13 @@ import { supabase } from "./js/supabase.js";
 
 const list = document.getElementById("doctorList");
 
+
 async function loadDoctors(){
 
 const { data, error } = await supabase
 .from("doctors")
 .select("*")
+.eq("is_deleted", false)
 
 if(error){
 console.log(error)
@@ -165,7 +167,7 @@ list.innerHTML += `
 
 <p><i class="bi bi-cash"></i> ₹${d.fees} Fees</p>
 
-<a href="viewprofile.html" class="doctor-btn mt-2 d-block text-center">
+<a href="viewprofile.html?doctor=${d.id}" class="doctor-btn mt-2 d-block text-center">
 View Full Profile
 </a>
 
@@ -183,7 +185,6 @@ Book Appointment
 }
 
 loadDoctors();
-
 </script>
 
 

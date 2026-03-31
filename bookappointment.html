@@ -116,6 +116,108 @@
         pointer-events: none;
         opacity: 0.5;
     }
+    /* PROFESSIONAL APPOINTMENT TYPE BUTTONS */
+.appointment-type-box {
+    display: flex;
+    gap: 12px;
+    background: #f5f8ff;
+    padding: 10px;
+    border-radius: 14px;
+    border: 1px solid #dfe8ff;
+}
+
+.appointment-type-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 14px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+
+    font-weight: 600;
+    font-size: 15px;
+    color: #1d2b53;
+
+    background: white;
+    border: 1px solid #d6e2ff;
+
+    transition: 0.25s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.appointment-type-btn i {
+    font-size: 18px;
+    color: #0066ff;
+}
+
+.appointment-type-btn:hover {
+    transform: translateY(-2px);
+    border-color: #0066ff;
+    box-shadow: 0 6px 14px rgba(0,102,255,0.18);
+}
+
+/* ACTIVE SELECTED BUTTON */
+.btn-check:checked + .appointment-type-btn {
+    background: linear-gradient(135deg, #0066ff, #0047b3);
+    color: white;
+    border: none;
+    box-shadow: 0 8px 18px rgba(0,102,255,0.35);
+}
+
+.btn-check:checked + .appointment-type-btn i {
+    color: white;
+}
+/* PROFESSIONAL INPUT FIELDS */
+.input-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    background: #f5f8ff;
+    border: 1px solid #dfe8ff;
+    border-radius: 14px;
+
+    padding: 12px 14px;
+    margin-bottom: 14px;
+
+    transition: 0.25s ease-in-out;
+}
+
+.input-box i {
+    font-size: 18px;
+    color: #0066ff;
+}
+
+.custom-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1d2b53;
+}
+
+.custom-input::placeholder {
+    color: #7a8bb5;
+    font-weight: 500;
+}
+
+/* Hover effect */
+.input-box:hover {
+    border-color: #0066ff;
+    box-shadow: 0 6px 16px rgba(0,102,255,0.12);
+}
+
+/* Focus effect */
+.input-box:focus-within {
+    border-color: #0066ff;
+    box-shadow: 0 8px 18px rgba(0,102,255,0.20);
+    background: white;
+}
 
     </style>
     </head>
@@ -135,29 +237,57 @@
         <div class="slot-card">
             <h4 class="mt-3">Patient Details</h4>
 
-    <input 
+    <div class="input-box">
+  <i class="bi bi-person-fill"></i>
+  <input 
     type="text"
     id="patientName"
-    class="form-control mb-2"
+    class="custom-input"
     placeholder="Full Name"
     required
-    >
+  >
+</div>
 
-    <input 
+<div class="input-box">
+  <i class="bi bi-envelope-fill"></i>
+  <input 
     type="email"
     id="patientEmail"
-    class="form-control mb-2"
-    placeholder="Email"
+    class="custom-input"
+    placeholder="Email Address"
     required
-    >
+  >
+</div>
 
-    <input 
+<div class="input-box">
+  <i class="bi bi-telephone-fill"></i>
+  <input 
     type="tel"
     id="patientPhone"
-    class="form-control mb-3"
+    class="custom-input"
     placeholder="Phone Number"
     required
-    >
+  >
+</div>
+    <label class="fw-bold mt-2 mb-2">Appointment Type</label>
+
+<div class="appointment-type-box mb-3">
+
+  <input type="radio" class="btn-check" name="appointmentType" id="offlineBtn" value="offline" checked>
+  <label class="appointment-type-btn" for="offlineBtn">
+    <i class="bi bi-hospital"></i>
+    <span>Offline Visit</span>
+  </label>
+
+  <input type="radio" class="btn-check" name="appointmentType" id="onlineBtn" value="online">
+  <label class="appointment-type-btn" for="onlineBtn">
+    <i class="bi bi-camera-video-fill"></i>
+    <span>Online Meet</span>
+  </label>
+
+</div>
+
+
             <h4>Available Slots</h4>
 
             <div id="feeBox" class="mt-2 fs-4 fw-bold"></div>
@@ -332,68 +462,72 @@
 
     async function bookAppointment(){
 
-    console.log("API CALL STARTED");
+  console.log("API CALL STARTED");
 
-    const patientname = document.getElementById("patientName").value;
-    const email = document.getElementById("patientEmail").value;
-    const phone = document.getElementById("patientPhone").value;
+  const patientname = document.getElementById("patientName").value;
+  const email = document.getElementById("patientEmail").value;
+  const phone = document.getElementById("patientPhone").value;
+  const appointmentType = document.querySelector('input[name="appointmentType"]:checked').value;
 
-    if(!patientname || !email || !phone){
+  if(!patientname || !email || !phone){
     alert("Please fill patient details");
     return;
-    }
+  }
 
-    if(!selectedSlot){
+  if(!selectedSlot){
     alert("Please select a slot");
     return;
-    }
+  }
 
-    const appointmentdate = selectedDate;
-    const appointmenttime = document.querySelector(".time-slot.active").textContent;
+  const appointmentdate = selectedDate;
+  const appointmenttime = document.querySelector(".time-slot.active").textContent;
 
-    try{
+  // ✅ Decide API based on appointment type
+  const apiUrl =
+    appointmentType === "online"
+      ? "http://localhost:5000/book-online-appointment"
+      : "http://localhost:5000/book-offline-appointment";
 
-    const response = await fetch("http://localhost:5000/book-video-appointment",{
-    method:"POST",
-    headers:{
-    "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-    patientname,
-    email,
-    phone,
-    appointmentdate,
-    appointmenttime,
-    doctor_id: doctorId,
-    slot_id: selectedSlot
-    })
+  try {
+
+    const response = await fetch(apiUrl,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        patientname,
+        email,
+        phone,
+        appointmentdate,
+        appointmenttime,
+        doctor_id: doctorId,
+        slot_id: selectedSlot
+      })
     });
 
     const data = await response.json();
-
-    console.log(data);
+    console.log("SERVER RESPONSE:", data);
 
     if(data.success){
 
-    alert("Appointment Confirmed!\nMeet Link: "+data.meet_link);
+      if(data.meet_link){
+        alert("✅ Online Appointment Confirmed!\nMeet Link: " + data.meet_link);
+      } else {
+        alert("✅ Offline Appointment Confirmed!");
+      }
 
-    window.location.href="appointmentsuccess.html";
+      window.location.href = "appointmentsuccess.html";
 
-    }else{
-
-    alert("Error booking appointment");
-
+    } else {
+      alert(data.message || "Error booking appointment");
     }
 
-    }catch(error){
-
+  } catch(error){
     console.error(error);
-    alert("Server error");
-
-    }
-
-    }
-
+    alert("Server error / Backend not running");
+  }
+}
 
 
     </script>
