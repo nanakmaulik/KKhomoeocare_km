@@ -1,15 +1,20 @@
 /******************************
- *  SSL FIX (VERY IMPORTANT)
+ *  SSL FIX (REMOVE IN PROD)
  ******************************/
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 import express from "express";
 import cors from "cors";
-
 import https from "https";
 import nodemailer from "nodemailer";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
+
+import path from "node:path";
+import process from "node:process";
+import { authenticate } from "@google-cloud/local-auth";
+import { google } from "googleapis";
+
 dotenv.config();
 
 /******************************
@@ -20,7 +25,7 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 /******************************
- * SUPABASE CLIENT (NO EXTRA FETCH)
+ * SUPABASE
  ******************************/
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -30,7 +35,7 @@ const supabase = createClient(
       fetch: (url, options = {}) => {
         return fetch(url, {
           ...options,
-          agent: new https.Agent({ rejectUnauthorized: false }) // SSL fix here too
+          agent: new https.Agent({ rejectUnauthorized: false })
         });
       }
     }
@@ -38,185 +43,44 @@ const supabase = createClient(
 );
 
 /******************************
- * MEET LINK GENERATOR
+ * GOOGLE CALENDAR (MEET LINK)
  ******************************/
-function generateMeetLink() {
-  let id =
-    Math.random().toString(36).substring(2, 6) +
-    "-" +
-    Math.random().toString(36).substring(2, 10);
+const SCOPES = ["https://www.googleapis.com/auth/calendar"];
+const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json");
 
-  return "https://meet.google.com/" + id;
+let authClient = null;
+
+async function getAuth() {
+  if (!authClient) {
+    authClient = await authenticate({
+      scopes: SCOPES,
+      keyfilePath: CREDENTIALS_PATH
+    });
+  }
+  return authClient;
 }
 
-/******************************
- * GMAIL SMTP
- ******************************/
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  secure: false, 
-  tls: {
-    rejectUnauthorized: false
-  }
-});
-app.get("/", (req, res) => {
-  res.send("MediSphere Backend Running 🚀");
-});
-/******************************
- * MAIN API
- ******************************/
+async function createMeetLink(date, time) {
+  const auth = await getAuth();
+  const calendar = google.calendar({ version: "v3", auth });
 
-
-app.post("/book-offline-appointment", async (req, res) => {
-  console.log("OFFLINE API HIT 🟢");
-
-  try {
-    const {
-      patientname,
-      email,
-      phone,
-      appointmentdate,
-      appointmenttime,
-      doctor_id,
-      slot_id
-    } = req.body;
-
-    const { data, error } = await supabase
-      .from("appointments")
-      .insert([
-        {
-          patientname,
-          patientemail: email,
-          phone,
-          appointmentdate,
-          appointmenttime,
-          doctor_id,
-          slot_id,
-          appointment_type: "offline",
-          meet_link: null,
-          status: "pending"
-        }
-      ]);
-      await supabase
-  .from("slots")
-  .update({ is_booked: true })
-  .eq("id", slot_id);
-
-    if (error) throw error;
-
-    res.json({ success: true, message: "Offline appointment booked successfully" });
-
-  } catch (err) {
-    console.error("ERR:", err);
-
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
-  }
-});
-
-app.post("/book-online-appointment", async (req, res) => {
-  console.log("ONLINE API HIT 🟢");
-
-  try {
-    const {
-      patientname,
-      email,
-      phone,
-      appointmentdate,
-      appointmenttime,
-      doctor_id,
-      slot_id
-    } = req.body;
-
-    const meetLink = await createGoogleMeetLink(appointmentdate, appointmenttime);
-
-    const { data, error } = await supabase
-      .from("appointments")
-      .insert([
-        {
-          patientname,
-          patientemail: email,
-          phone,
-          appointmentdate,
-          appointmenttime,
-          doctor_id,
-          slot_id,
-          appointment_type: "online",
-          meet_link: meetLink,
-          status: "pending"
-        }
-      ]);
-await supabase
-  .from("slots")
-  .update({ is_booked: true })
-  .eq("id", slot_id);
-    if (error) throw error;
-
-    // Email patient (optional)
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Online Appointment Confirmed",
-      html: `
-        <h2>Your Online Appointment is Confirmed</h2>
-        <p><strong>Date:</strong> ${appointmentdate}</p>
-        <p><strong>Time:</strong> ${appointmenttime}</p>
-        <p><strong>Meet Link:</strong> <a href="${meetLink}">${meetLink}</a></p>
-      `
-    });
-
-    res.json({ success: true, meet_link: meetLink });
-
-  } catch (err) {
-    console.error("ERR:", err);
-
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
-  }
-});
-// generate google meet link
-import { google } from "googleapis";
-import fs from "fs";
-
-const SCOPES = ["https://www.googleapis.com/auth/calendar"];
-
-const auth = new google.auth.GoogleAuth({
-  keyFile: "./service-account.json", // JSON file ka naam
-  scopes: SCOPES
-});
-
-const calendar = google.calendar({ version: "v3", auth });
-
-async function createGoogleMeetLink(appointmentdate, appointmenttime) {
-
-  const startDateTime = new Date(`${appointmentdate}T${appointmenttime}:00`);
+  const startDateTime = new Date(`${date}T${time}:00`);
   const endDateTime = new Date(startDateTime.getTime() + 30 * 60000);
 
   const event = {
-    summary: "MediSphere Online Consultation",
-    description: "Your online doctor appointment",
+    summary: "Doctor Consultation",
     start: {
-      dateTime: startDateTime.toISOString(),
+      dateTime: startDateTime,
       timeZone: "Asia/Kolkata"
     },
     end: {
-      dateTime: endDateTime.toISOString(),
+      dateTime: endDateTime,
       timeZone: "Asia/Kolkata"
     },
     conferenceData: {
       createRequest: {
-        requestId: Math.random().toString(36).substring(2, 15),
-        conferenceSolutionKey: {
-          type: "hangoutsMeet"
-        }
+        requestId: Math.random().toString(36).substring(2),
+        conferenceSolutionKey: { type: "hangoutsMeet" }
       }
     }
   };
@@ -229,6 +93,138 @@ async function createGoogleMeetLink(appointmentdate, appointmenttime) {
 
   return response.data.hangoutLink;
 }
+
+/******************************
+ * EMAIL (GMAIL SMTP)
+ ******************************/
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  },
+  secure: false,
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+/******************************
+ * ROUTES
+ ******************************/
+app.get("/", (req, res) => {
+  res.send("MediSphere Backend Running 🚀");
+});
+
+/******** OFFLINE ********/
+app.post("/book-offline-appointment", async (req, res) => {
+  try {
+    const {
+      patientname,
+      email,
+      phone,
+      appointmentdate,
+      appointmenttime,
+      doctor_id,
+      slot_id
+    } = req.body;
+
+    const { error } = await supabase.from("appointments").insert([
+      {
+        patientname,
+        patientemail: email,
+        phone,
+        appointmentdate,
+        appointmenttime,
+        doctor_id,
+        slot_id,
+        appointment_type: "offline",
+        meet_link: null,
+        status: "pending"
+      }
+    ]);
+
+    await supabase
+      .from("slots")
+      .update({ is_booked: true })
+      .eq("id", slot_id);
+
+    if (error) throw error;
+
+    res.json({ success: true });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/******** ONLINE ********/
+app.post("/book-online-appointment", async (req, res) => {
+  try {
+    const {
+      patientname,
+      email,
+      phone,
+      appointmentdate,
+      appointmenttime,
+      doctor_id,
+      slot_id
+    } = req.body;
+
+    // ✅ REAL MEET LINK
+    const meetLink = await createMeetLink(
+      appointmentdate,
+      appointmenttime
+    );
+
+    const { error } = await supabase.from("appointments").insert([
+      {
+        patientname,
+        patientemail: email,
+        phone,
+        appointmentdate,
+        appointmenttime,
+        doctor_id,
+        slot_id,
+        appointment_type: "online",
+        meet_link: meetLink,
+        status: "confirmed"
+      }
+    ]);
+
+    await supabase
+      .from("slots")
+      .update({ is_booked: true })
+      .eq("id", slot_id);
+
+    if (error) throw error;
+
+    // ✅ EMAIL SEND
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your Appointment Confirmation",
+      html: `
+        <h2>Appointment Confirmed</h2>
+        <p>Date: ${appointmentdate}</p>
+        <p>Time: ${appointmenttime}</p>
+        <p>Meet Link: <a href="${meetLink}">${meetLink}</a></p>
+      `
+    });
+
+    res.json({
+      success: true,
+      meetLink
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
 /******************************
  * START SERVER
  ******************************/
