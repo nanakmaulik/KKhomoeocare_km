@@ -22,39 +22,130 @@
     }
 
     /* LEFT DOCTOR CARD */
-    .doctor-card{
-        flex:1.3;
-        background:#fff;
-        padding:30px;
-        border-radius:16px;
-        box-shadow:0 3px 18px rgba(0,0,0,0.08);
-    }
-    .doctor-header{
-        display:flex;
-        gap:20px;
-    }
-    .doctor-img{
-        width:140px;
-        height:140px;
-        border-radius:12px;
-        object-fit:cover;
-    }
-    .doctor-name{
-        font-size:27px;
-        font-weight:700;
-    }
-    .doctor-special{
-        font-size:18px;
-        color:#555;
-    }
-    .detail-item{
-        margin-top:8px;
-        font-size:15px;
-    }
-    .detail-item i{
-        color:#2e7bff;
-        margin-right:8px;
-    }
+    /* LEFT DOCTOR CARD (PROFESSIONAL) */
+.doctor-card{
+    flex:1.3;
+    background:#fff;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0px 8px 25px rgba(0,0,0,0.08);
+}
+
+.doctor-header{
+    display:flex;
+    gap:18px;
+    align-items:center;
+    padding-bottom:15px;
+    border-bottom:1px solid #eee;
+}
+
+.doctor-img{
+    width:95px;
+    height:95px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #0066ff;
+    box-shadow:0px 4px 15px rgba(0,102,255,0.25);
+}
+
+.doctor-name{
+    font-size:26px;
+    font-weight:850;
+    margin:0;
+    color:#111;
+}
+
+.doctor-special{
+    font-size:16px;
+    font-weight:700;
+    color:#0066ff;
+    background:rgba(0,102,255,0.1);
+    padding:5px 12px;
+    border-radius:20px;
+    display:inline-block;
+    margin-top:6px;
+}
+
+.doctor-exp{
+    margin-top:8px;
+    font-size:16px;
+    color:#555;
+    font-weight: 600;
+}
+
+.doctor-stats{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-top:18px;
+}
+
+.stat-box{
+    flex:1;
+    background:#f7f9ff;
+    border-radius:14px;
+    padding:12px;
+    text-align:center;
+    border:1px solid #e3e9ff;
+}
+
+.stat-title{
+    margin:0;
+    font-size:14px;
+    color:#777;
+    font-weight:700;
+}
+
+.stat-value{
+    margin:4px 0 0;
+    font-size:19px;
+    font-weight:900;
+    color:#0066ff;
+}
+
+.doctor-contact{
+    margin-top:16px;
+    font-size:16px;
+    font-weight: 600;
+    color:#444;
+}
+
+.doctor-contact i{
+    color:#0066ff;
+    margin-right:8px;
+}
+
+.doctor-about{
+    margin-top:18px;
+    padding:15px;
+    border-radius:14px;
+    background:#f9fafc;
+    border:1px solid #eee;
+}
+
+.doctor-about h4{
+    margin:0 0 10px;
+    font-size:18px;
+    font-weight:900;
+    color:#111;
+}
+
+.doctor-about p{
+    margin:0;
+    font-size:16px;
+    color:#555;
+    line-height:1.7;
+}
+.doctor-email{
+    text-decoration: none;
+    color: #0066ff;
+    font-weight: 700;
+}
+
+.doctor-email:hover{
+    text-decoration: underline;
+    color: #0047b3;
+}
 
     /* RIGHT SLOT CARD */
     .slot-card{
@@ -218,6 +309,23 @@
     box-shadow: 0 8px 18px rgba(0,102,255,0.20);
     background: white;
 }
+.no-slot-msg{
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
+}
+
+.no-slot-msg i{
+    margin-right: 8px;
+    font-size: 18px;
+    color: #ff9800;
+}
 
     </style>
     </head>
@@ -335,29 +443,55 @@
         }
 
         doctorCard.innerHTML = `
-    <div class="doctor-header">
-        <img src="${data.photo}" class="doctor-img">
-        <div>
-            <div class="doctor-name">${data.name}</div>
-            <div class="doctor-special">${data.specialization}</div>
-            <div class="text-muted">${data.experience} years experience</div>
-        </div>
-    </div>
+  <div class="doctor-header">
+      <img src="${data.photo || 'https://cdn-icons-png.flaticon.com/512/387/387561.png'}" class="doctor-img">
 
-    <div class="detail-item mt-3">
-        <i class="bi bi-envelope"></i> ${data.email}
-    </div>
+      <div>
+          <div class="doctor-name">${data.name}</div>
 
-    <div class="detail-item">
-        <i class="bi bi-cash"></i> ₹${data.fees}
-    </div>
+          <div class="doctor-special">
+            ${data.specialization}
+          </div>
 
-    <!-- ⭐ About Section -->
-    <hr class="mt-4">
-    <h4 class="mt-2 fw-bold">About Doctor</h4>
-    <p class="mt-2" style="font-size:15px; line-height:22px; color:#444;">
-        ${data.about || "No details available."}
-    </p>
+          <div class="doctor-exp">
+            <i class="bi bi-briefcase-fill text-primary"></i>
+            ${data.experience} years experience
+          </div>
+      </div>
+  </div>
+
+  <div class="doctor-stats">
+      <div class="stat-box">
+          <p class="stat-title">Consultation Fee</p>
+          <p class="stat-value">₹${data.fees}</p>
+      </div>
+
+      <div class="stat-box">
+    <p class="stat-title">Rating</p>
+    <p class="stat-value">⭐ ${data.rating || "N/A"}</p>
+</div>
+
+<div class="stat-box">
+    <p class="stat-title">Patients</p>
+    <p class="stat-value">${data.patients || 0}+</p>
+</div>
+  </div>
+
+  <div class="doctor-contact">
+    <p>
+  <i class="bi bi-envelope-fill"></i>
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${data.email}" 
+     target="_blank" 
+     class="doctor-email">
+     ${data.email}
+  </a>
+</p>
+  </div>
+
+  <div class="doctor-about">
+      <h4>About Doctor</h4>
+      <p>${data.about || "This doctor is experienced in providing high-quality consultation and patient care."}</p>
+  </div>
 `;
         loadSlots();
     }
@@ -378,73 +512,129 @@
         dateContainer.innerHTML = "";
         slotContainer.innerHTML = "";
 
-        // GROUP SLOTS BY DATE
-        const groupedDates = {};
-        slots.forEach(s => {
-            if(!groupedDates[s.slot_date]) groupedDates[s.slot_date] = [];
-            groupedDates[s.slot_date].push(s);
-        });
+        
+       
+       // GROUP SLOTS BY DATE (ONLY TODAY + FUTURE)
+const groupedDates = {};
 
-        // CREATE DATE BUTTONS
-        Object.keys(groupedDates).forEach((date, index)=>{
+const today = new Date();
+today.setHours(0,0,0,0);
 
-            dateContainer.innerHTML += `
-            <button class="date-btn ${index===0?'active':''}" data-date="${date}">
-                ${formatDate(date)}
-            </button>
-            `;
+slots.forEach(s => {
 
-            if(index===0) selectedDate = date;
-        });
+    const slotDate = new Date(s.slot_date);
+    slotDate.setHours(0,0,0,0);
 
-        // LOAD FIRST DATE SLOTS
+    // ❌ Skip past dates automatically
+    if(slotDate < today) return;
+
+    if(!groupedDates[s.slot_date]) groupedDates[s.slot_date] = [];
+    groupedDates[s.slot_date].push(s);
+});
+
+// ✅ If no future slots exist
+if(Object.keys(groupedDates).length === 0){
+    dateContainer.innerHTML = "<p class='text-danger'>No future slots available</p>";
+    slotContainer.innerHTML = "";
+    return;
+}
+
+      // CREATE DATE BUTTONS (SORTED)
+const sortedDates = Object.keys(groupedDates)
+  .sort((a, b) => new Date(a) - new Date(b));
+
+sortedDates.forEach((date, index) => {
+
+    dateContainer.innerHTML += `
+    <button class="date-btn ${index===0?'active':''}" data-date="${date}">
+        ${formatDate(date)}
+    </button>
+    `;
+
+    if(index===0) selectedDate = date;
+});
+
+// LOAD FIRST DATE SLOTS
+loadTimeSlots(groupedDates[selectedDate]);
+
+// DATE CLICK EVENTS
+document.querySelectorAll(".date-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+        document.querySelectorAll(".date-btn").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        selectedDate = btn.dataset.date;
         loadTimeSlots(groupedDates[selectedDate]);
-
-        // DATE CLICK EVENTS
-        document.querySelectorAll(".date-btn").forEach(btn=>{
-            btn.addEventListener("click", ()=>{
-                document.querySelectorAll(".date-btn").forEach(b=>b.classList.remove("active"));
-                btn.classList.add("active");
-
-                selectedDate = btn.dataset.date;
-                loadTimeSlots(groupedDates[selectedDate]);
-            });
-        });
-
-    }
+    });
+});
+ }
         
     /* STEP 3 — LOAD TIME SLOTS */
     function loadTimeSlots(slots){
-        slotContainer.innerHTML = "";
-        selectedSlot = null;
 
-        slots.forEach(slot=>{
-            let div = document.createElement("div");
-            div.textContent = slot.slot_time;
-            div.dataset.slotId = slot.id;
+    slotContainer.innerHTML = "";
+    selectedSlot = null;
 
-            // If slot already booked → disable it
-            if(slot.is_booked){
-                div.classList.add("time-slot", "disabled-slot");
-                div.style.background = "#ddd";
-                div.style.color = "#888";
-                div.style.cursor = "not-allowed";
-                div.style.border = "1px solid #ccc";
-            } 
-            else {
-                div.classList.add("time-slot");
+    const now = new Date();
 
-                div.onclick = ()=>{
-                    document.querySelectorAll(".time-slot").forEach(s=>s.classList.remove("active"));
-                    div.classList.add("active");
-                    selectedSlot = slot.id;
-                };
-            }
+    slots.forEach(slot => {
 
-            slotContainer.appendChild(div);
-        });
+        // slot date
+        const slotDateObj = new Date(selectedDate);
+        slotDateObj.setHours(0,0,0,0);
+
+        // today date
+        const todayObj = new Date();
+        todayObj.setHours(0,0,0,0);
+
+        // slot time split
+        const [hours, minutes] = slot.slot_time.split(":").map(Number);
+
+        // full slot datetime
+        const slotDateTime = new Date(selectedDate);
+        slotDateTime.setHours(hours, minutes, 0, 0);
+
+        // ❌ अगर date आज की है और time निकल चुका है तो skip
+        if(slotDateObj.getTime() === todayObj.getTime() && slotDateTime < now){
+            return;
+        }
+
+        let div = document.createElement("div");
+        div.textContent = slot.slot_time;
+        div.dataset.slotId = slot.id;
+
+        // If slot already booked → disable it
+        if(slot.is_booked){
+            div.classList.add("time-slot", "disabled-slot");
+            div.style.background = "#ddd";
+            div.style.color = "#888";
+            div.style.cursor = "not-allowed";
+            div.style.border = "1px solid #ccc";
+        } 
+        else {
+            div.classList.add("time-slot");
+
+            div.onclick = ()=>{
+                document.querySelectorAll(".time-slot").forEach(s=>s.classList.remove("active"));
+                div.classList.add("active");
+                selectedSlot = slot.id;
+            };
+        }
+
+        slotContainer.appendChild(div);
+
+    });
+
+    // अगर सारे slots निकल चुके हैं
+    if(slotContainer.innerHTML.trim() === ""){
+        slotContainer.innerHTML = `
+  <div class="no-slot-msg">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    No available time slots
+  </div>
+`;
     }
-
+}
     /* FORMAT DATE LIKE "12 Mar" */
     function formatDate(dateStr){
         const d = new Date(dateStr);

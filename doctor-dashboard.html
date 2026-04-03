@@ -247,6 +247,12 @@ font-weight:bold;
 <label>About</label>
 <textarea id="about" class="form-control mb-2"></textarea>
 
+<label>Rating</label>
+<input id="rating" class="form-control mb-2" type="number" step="0.1" min="0" max="5">
+
+<label>Patients</label>
+<input id="patients" class="form-control mb-2" type="number" min="0">
+
 <label>Doctor Image</label>
 <input type="file" id="photo" class="form-control mb-3">
 
@@ -309,6 +315,12 @@ Save Slots
 
                 <label>About:</label>
                 <textarea id="editabout" class="form-control mb-2" rows="4"></textarea>
+
+                <label>Rating</label>
+                <input id="editRating" class="form-control mb-2" type="number" step="0.1" min="0" max="5">
+
+                <label>Patients</label>
+                <input id="editPatients" class="form-control mb-2" type="number" min="0">
 
                 <label>Image URL:</label>
                 <input id="editImg" class="form-control mb-2">
@@ -451,7 +463,8 @@ container.innerHTML += `
 
 
 <p class="mb-1">Experience : ${doc.experience}</p>
-
+<p class="mb-1">⭐ Rating : ${doc.rating || "N/A"}</p>
+<p class="mb-1">👥 Patients : ${doc.patients || "0"}</p>
 <p>Fees : ₹${doc.fees}</p>
 
 </div>
@@ -495,9 +508,11 @@ let spec=document.getElementById("spec").value
 let exp=document.getElementById("exp").value
 let fees=document.getElementById("fees").value
 let about=document.getElementById("about").value
+let rating = document.getElementById("rating").value;
+let patients = document.getElementById("patients").value;
 let file=document.getElementById("photo").files[0]
 
-if(!name || !email || !spec || !exp || !fees|| !about || !file){
+if(!name || !email || !spec || !exp || !fees || !about || !file || !rating || !patients){
 
 alert("Fill all fields")
 return
@@ -532,15 +547,15 @@ let imageURL = urlData.publicUrl;
 let {error}=await supabase
 .from("doctors")
 .insert([{
-
 name:name,
 email:email,
 specialization:spec,
 experience:exp,
 fees:fees,
+rating: parseFloat(rating),
+patients: parseInt(patients),
 about:about,
 photo:imageURL
-
 }])
 
 
@@ -579,6 +594,8 @@ document.getElementById("editSpec").value = data.specialization
 document.getElementById("editExp").value = data.experience
 document.getElementById("editFees").value = data.fees
 document.getElementById("editabout").value = data.about
+document.getElementById("editRating").value = data.rating || 0;
+document.getElementById("editPatients").value = data.patients || 0;
 document.getElementById("editImg").value = data.photo
 
 }
@@ -593,6 +610,8 @@ const email = document.getElementById("editMail").value
 const specialization = document.getElementById("editSpec").value
 const experience = document.getElementById("editExp").value
 const fees = document.getElementById("editFees").value
+const rating = document.getElementById("editRating").value;
+const patients = document.getElementById("editPatients").value;
 const about = document.getElementById("editabout").value
 const photo = document.getElementById("editImg").value
 
@@ -604,6 +623,8 @@ email:email,
 specialization:specialization,
 experience:experience,
 fees:fees,
+rating: parseFloat(rating),
+patients: parseInt(patients),
 about:about,
 photo:photo
 })
@@ -809,7 +830,7 @@ labTestMenu.onclick = () => {
     loadLabTests();
 };
 
-/* LOAD LAB TEST BOOKINGS */
+
 /* LOAD LAB TEST BOOKINGS */
 async function loadLabTests() {
 
