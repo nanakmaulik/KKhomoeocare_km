@@ -125,15 +125,17 @@ body {
 
 </div>
 
-<!-- SUPABASE JS -->
+<!-- SUPABASE JS v2 -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-// 🔥 CORRECT SUPABASE INITIALIZATION
-const client = supabase.createClient(
-    "YOUR_SUPABASE_URL",
-    "YOUR_SUPABASE_ANON_KEY"
+// Correct v2 syntax
+const { createClient } = supabase;
+
+const client = createClient(
+    "https://vwvskyxthnwscelhxvma.supabase.co",
+    "sb_publishable_qcwlJ1XOB6bgxv0uvAIOVQ_8U5edIux"
 );
 
 // 🔥 PASSWORD TOGGLE
