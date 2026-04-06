@@ -180,6 +180,50 @@ font-weight:bold;
     color: #666;
     margin-top: 10px;
 }
+/* slot display page css */
+.slot-doctor-card{
+    background:#fff;
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
+    border:none;
+    height:100%;
+}
+
+.slot-doctor-card h4{
+    font-size:18px;
+    font-weight:800;
+    color:#1d2b53;
+    margin-bottom:4px;
+}
+
+.slot-doctor-card p{
+    margin:0;
+    font-size:14px;
+    color:#555;
+    font-weight:600;
+}
+
+.month-title{
+    margin-top:14px;
+    font-size:15px;
+    font-weight:800;
+    color:#0066ff;
+    border-left:4px solid #0066ff;
+    padding-left:10px;
+}
+
+.slot-badge{
+    display:inline-block;
+    background:#f0f4ff;
+    border:1px solid #d8e1ff;
+    color:#1d2b53;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:700;
+    margin:5px 6px 0 0;
+}
 </style>
 </head>
 
@@ -213,6 +257,9 @@ font-weight:bold;
 </div>
 <div class="menu" onclick="showPage('appointmentPage'); loadAppointments();">
     📅 Appointments
+</div>
+<div class="menu" onclick="showPage('doctorSlotListPage'); loadDoctorSlotsMonthWise();">
+📅 Doctor Slots (Month Wise)
 </div>
 </div>
 
@@ -345,7 +392,16 @@ Save Slots
     <h3 class="mb-4">Appointments</h3>
    <div class="row g-4 mt-4" id="appointmentList"></div>
 </div>
+<!-- slot display LIST -->
+<div id="doctorSlotListPage" class="page">
+  <h2>Doctor Slots (Month Wise)</h2>
 
+  <!-- ✅ Month Dropdown -->
+  <select id="monthSelect" class="form-select mt-3 mb-3" style="max-width:300px;">
+  </select>
+
+  <div id="doctorSlotListContainer" class="row mt-4"></div>
+</div>
 <!-- DOCTOR LIST -->
 
 <div id="doctorList" class="page">
@@ -651,6 +707,7 @@ let slots = [];
 window.openSlotManager = async function(id,name){
 
     currentDoctor = id;
+    console.log("Current Doctor ID:", currentDoctor);
 
     showPage("slotsPage");
 
@@ -955,6 +1012,130 @@ window.deleteLabTest = async function(id) {
     alert("Lab Test booking deleted successfully!");
     loadLabTests();
 };
+ // slot display list js
+window.loadDoctorSlotsMonthWise = async function () {
+
+  const container = document.getElementById("doctorSlotListContainer");
+  const monthDropdown = document.getElementById("monthSelect");
+
+  container.innerHTML = "<p>Loading doctor slots...</p>";
+
+  // ✅ Dropdown months generate
+  const now = new Date();
+  const monthsList = [];
+
+  for (let i = 0; i < 12; i++) {
+    const future = new Date(now.getFullYear(), now.getMonth() + i, 1);
+
+    const monthKey = future.toLocaleString("en-US", {
+      month: "long",
+      year: "numeric"
+    });
+
+    monthsList.push({
+      label: monthKey,
+      month: future.getMonth(),
+      year: future.getFullYear()
+    });
+  }
+
+  // dropdown fill only first time
+  if (monthDropdown.options.length === 0) {
+    monthsList.forEach((m, index) => {
+      const option = document.createElement("option");
+      option.value = `${m.month}-${m.year}`;
+      option.textContent = m.label;
+      if (index === 0) option.selected = true; // default current month
+      monthDropdown.appendChild(option);
+    });
+  }
+
+  // selected month-year
+  const [selectedMonth, selectedYear] = monthDropdown.value.split("-");
+  const selectedM = parseInt(selectedMonth);
+  const selectedY = parseInt(selectedYear);
+
+  // 1) Fetch doctors
+  const { data: doctors, error: docError } = await supabase
+    .from("doctors")
+    .select("*")
+    .eq("is_deleted", false);
+
+  if (docError) {
+    console.log(docError);
+    container.innerHTML = "<p>Error loading doctors</p>";
+    return;
+  }
+
+  // 2) Fetch all slots
+  const { data: slots, error: slotError } = await supabase
+    .from("slots")
+    .select("*")
+    .order("slot_date", { ascending: true });
+
+  if (slotError) {
+    console.log(slotError);
+    container.innerHTML = "<p>Error loading slots</p>";
+    return;
+  }
+
+  container.innerHTML = "";
+
+  doctors.forEach((doc) => {
+
+    // doctor slots filter
+    let doctorSlots = slots.filter(s => s.doctor_id === doc.id);
+
+    // ✅ Filter slots by selected month + year
+    doctorSlots = doctorSlots.filter(slot => {
+      const dateObj = new Date(slot.slot_date);
+      return (
+        dateObj.getMonth() === selectedM &&
+        dateObj.getFullYear() === selectedY
+      );
+    });
+
+    let monthsHTML = "";
+
+    if (doctorSlots.length === 0) {
+      monthsHTML = `<p class="text-danger mt-2">No slots available</p>`;
+    } else {
+
+      const monthTitle = new Date(selectedY, selectedM, 1).toLocaleString("en-US", {
+        month: "long",
+        year: "numeric"
+      });
+
+      monthsHTML += `<div class="month-title">${monthTitle}</div>`;
+
+      doctorSlots.forEach(slot => {
+        monthsHTML += `
+          <span class="slot-badge">
+            ${slot.slot_date} | ${slot.slot_time}
+          </span>
+        `;
+      });
+    }
+
+    container.innerHTML += `
+      <div class="col-md-6 col-lg-4 mb-4 d-flex">
+        <div class="slot-doctor-card w-100">
+          <h4>${doc.name}</h4>
+          <p>${doc.specialization}</p>
+
+          ${monthsHTML}
+        </div>
+      </div>
+    `;
+  });
+
+  // ✅ Dropdown change event
+  monthDropdown.onchange = () => {
+    loadDoctorSlotsMonthWise();
+  };
+};
+
+
 // LOAD APPOINTMENTS
 window.loadAppointments = async function () {
 
