@@ -261,6 +261,9 @@ font-weight:bold;
 <div class="menu" onclick="showPage('doctorSlotListPage'); loadDoctorSlotsMonthWise();">
 📅 Doctor Slots (Month Wise)
 </div>
+<div class="menu" onclick="showPage('testimonialPage'); loadTestimonials();">
+⭐ Testimonials
+</div>
 </div>
 
 
@@ -401,6 +404,11 @@ Save Slots
   </select>
 
   <div id="doctorSlotListContainer" class="row mt-4"></div>
+</div>
+ <!-- Testimonials -->
+<div id="testimonialPage" class="page">
+    <h2>Manage Testimonials</h2>
+    <div id="testimonialContainer" class="row mt-4"></div>
 </div>
 <!-- DOCTOR LIST -->
 
@@ -1012,6 +1020,106 @@ window.deleteLabTest = async function(id) {
     alert("Lab Test booking deleted successfully!");
     loadLabTests();
 };
+
+
+
+// LOAD TESTIMONIALS
+window.loadTestimonials = async function () {
+    // APPROVE TESTIMONIAL
+window.approveTestimonial = async function(id) {
+
+    const { error } = await supabase
+        .from("testimonials")
+        .update({ status: "approved" })
+        .eq("id", id);
+
+    if (error) {
+        console.log(error);
+        alert("Approve failed");
+        return;
+    }
+
+    alert("Testimonial Approved ✅");
+    loadTestimonials(); // refresh list
+};
+
+
+// DELETE TESTIMONIAL
+window.deleteTestimonial = async function(id) {
+
+    if (!confirm("Delete this testimonial?")) return;
+
+    const { error } = await supabase
+        .from("testimonials")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+        console.log(error);
+        alert("Delete failed");
+        return;
+    }
+
+    alert("Deleted successfully 🗑️");
+    loadTestimonials();
+};
+
+    const container = document.getElementById("testimonialContainer");
+    container.innerHTML = "<p>Loading...</p>";
+
+    const { data, error } = await supabase
+        .from("testimonials")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    console.log("Testimonials:", data, error);
+
+    if (error) {
+        container.innerHTML = "<p>Error loading testimonials</p>";
+        return;
+    }
+
+    container.innerHTML = "";
+
+    data.forEach(t => {
+
+        let status = t.status || "pending";
+
+        container.innerHTML += `
+        <div class="col-md-4 mb-4">
+            <div class="card p-3">
+
+                <img src="${t.image_url || 'https://via.placeholder.com/150'}" 
+                     style="height:150px; object-fit:cover; border-radius:10px;">
+
+                <h5 class="mt-2">${t.name}</h5>
+                <p>${t.message}</p>
+
+                <p>
+                    <strong>Status:</strong> 
+                    <span class="badge ${status === "approved" ? "bg-success" : "bg-warning"}">
+                        ${status}
+                    </span>
+                </p>
+
+                ${
+                    status === "pending"
+                    ? `<button class="btn btn-success btn-sm w-100"
+                        onclick="approveTestimonial('${t.id}')">
+                        Approve
+                    </button>`
+                    : `<button class="btn btn-danger btn-sm w-100"
+                        onclick="deleteTestimonial('${t.id}')">
+                        Delete
+                    </button>`
+                }
+
+            </div>
+        </div>
+        `;
+    });
+};
+
  // slot display list js
 window.loadDoctorSlotsMonthWise = async function () {
 
@@ -1134,6 +1242,7 @@ window.loadDoctorSlotsMonthWise = async function () {
     loadDoctorSlotsMonthWise();
   };
 };
+
 
 
 // LOAD APPOINTMENTS

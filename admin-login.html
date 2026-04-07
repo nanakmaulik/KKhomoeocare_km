@@ -76,6 +76,18 @@ body {
     text-align: center;
     margin-top: 10px;
 }
+.signup-link {
+    color: #2879ff;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 4px;
+    transition: 0.3s;
+}
+
+.signup-link:hover {
+    color: #1c5ec9;
+    text-decoration: underline;
+}
 </style>
 </head>
 
@@ -100,6 +112,10 @@ body {
         <p id="msg"></p>
 
         <button class="btn-pro" type="submit">Login</button>
+        <div style="text-align:center; margin-top:20px; font-size:14px;">
+  Don't have an account?
+  <a href="admin_registration.html" class="signup-link">Create Account</a>
+</div>
 
     </form>
 
@@ -150,7 +166,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e)=>{
     msg.textContent = "Login Successful 🎉";
 
     setTimeout(()=>{
-        window.location.href = "index.html";
+        window.location.href = "doctor-dashboard.html";
     }, 1000);
 });
 </script>
