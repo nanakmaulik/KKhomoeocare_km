@@ -164,6 +164,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e)=>{
     // ✅ SUCCESS
     msg.style.color = "green";
     msg.textContent = "Login Successful 🎉";
+    localStorage.setItem("adminLoggedIn", "true");
 
     setTimeout(()=>{
         window.location.href = "doctor-dashboard.html";
